@@ -1,5 +1,8 @@
+#pragma once
 
-
+#include <functional>
+#include "Player.h"
+#include <vector>
 //S_k * P + S_b(=0) + y_delta = D_k * P + D_b
 //P = (D_b - y_delta) / (S_k - D_k)
 struct Plot {
@@ -17,12 +20,12 @@ struct Plot {
 };
 
 struct City {
-    City(int id1, std::vector<std::vector<double>> plots, std::functional accept1,
-                std::functional pre_buy1, std::functional post_buy1
-                std::functional pre_sell1, std::functional post_sell1) {
+    City(int id1, std::vector<std::vector<double>> plots, std::function<bool(Player&, std::vector<int>)> accept1,
+                std::function<void(Player&, std::vector<int>)> pre_buy1, std::function<void(Player&, std::vector<int>)> post_buy1,
+                std::function<void(Player&, std::vector<int>)> pre_sell1, std::function<void(Player&, std::vector<int>)> post_sell1) {
         id = id1;
         for (int i = 0; i < plots.size(); i++) {
-            items.push_back(Plot{plots[i][0], plots[i][1], plots[i][2], plots[i][3]});
+            items.push_back(Plot{plots[i][0], (int)plots[i][1], plots[i][2], (int)plots[i][3]});
         }
         delta_per_round = std::vector<int>(11);
         accept = accept1;
@@ -37,17 +40,17 @@ struct City {
     int id;
     std::vector<Plot> items;
     std::vector<int> delta_per_round;
-    std::functional accept;
-    std::functional pre_buy;
-    std::functional post_buy;
-    std::functional pre_sell;
-    std::functional post_sell;
+    std::function<bool(Player&, std::vector<int>)> accept;
+    std::function<void(Player&, std::vector<int>)> pre_buy;
+    std::function<void(Player&, std::vector<int>)> post_buy;
+    std::function<void(Player&, std::vector<int>)> pre_sell;
+    std::function<void(Player&, std::vector<int>)> post_sell;
     
     std::vector<int> army;
     int strategy;
     
     bool check_available_for_buy_resources(std::vector<int> res) {
-        if (res.size() != resources.size())
+        if (res.size() != delta_per_round.size())
             return false;
         for (int i = 0; i < res.size(); i++) {
             if (res[i] > get_limit_Q(i)) {

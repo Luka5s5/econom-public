@@ -1,14 +1,11 @@
+#pragma once
+
 #include "Player.h"
 #include "City.h"
 #include "War.h"
 #include "Response.h"
 #include <string>
 #include <vector>
-
-/*
-Инициализация конкретного Game существует только через файл.
-Инициализацию городов - хардкод, т.к. лямбды.
-*/
 
 template <typename T>
 std::vector<T> changed_sign(std::vector<T> v) {
@@ -20,10 +17,31 @@ std::vector<T> changed_sign(std::vector<T> v) {
 }
 
 struct Game {
-public: 
+public:
+    std::vector<int> get_player_army(int id);
+    int get_player_strat(int id);
+    void kill_troop(int id, int troop_type);
+
+    Response start_cycle() {
+        for (auto& city: cities) {
+            city.update_plots();
+        }
+        for (auto& player: players) {
+            player.mine_resources();
+        }
+        return Response{true, "Цикл начат."};
+    }
+    
+    Response end_cycle() {
+        for (auto& player: players) {
+            player.last_attack++;
+            player.ban = 0;
+        }
+    }
+ 
     Response register_player() {
         players.push_back(Player(players.size()));
-        return Response{true, std::to_string(players.size() - 1) + " - Номер нового игрока", players.size()}; 
+        return Response{true, std::to_string(players.size() - 1) + " - Номер нового игрока", (int)players.size()}; 
     }
 
     Response trade(int player1_id,
@@ -55,7 +73,7 @@ public:
         bool accepted = (!p1.has_treaty(player2_id, type_of_treaty)) &&
                         (!p2.has_treaty(player1_id, type_of_treaty));
         if (!accepted) {
-            return Response{true, "Такое соглашение уже существует."}
+            return Response{true, "Такое соглашение уже существует."};
         }    
         p1.add_treaty(player2_id, type_of_treaty);
         p2.add_treaty(player1_id, type_of_treaty);
@@ -68,7 +86,7 @@ public:
         bool accepted = (p1.has_treaty(player2_id, type_of_treaty)) &&
                         (p2.has_treaty(player1_id, type_of_treaty));
         if (!accepted) {
-            return Response{true, "Такого соглашения не существует."}
+            return Response{true, "Такого соглашения не существует."};
         }    
         p1.remove_treaty(player2_id, type_of_treaty);
         p2.remove_treaty(player1_id, type_of_treaty);
@@ -91,14 +109,14 @@ public:
         player.change_currencies(changed_sign(currency_array));
         city.change_available_for_buy_resources(resource_array);
         city.post_buy(player, resource_array);
-        return Response{true, "Успешно."}
+        return Response{true, "Успешно."};
     }
 
     Response sell_query(int player_id, int city_id, std::vector<int> resource_array) {
         Player& player = players[player_id];
         City& city = cities[city_id]; 
-        bool accepted = city.check_available_for_buy_resources(resources_array) &&
-                        city.accept(player, resource_array) && player.check_available_resources(resources_array);
+        bool accepted = city.check_available_for_buy_resources(resource_array) &&
+                        city.accept(player, resource_array) && player.check_available_resources(resource_array);
         if (!accepted) {
             return Response{false, "Нет спроса или недостаточно ресурсов игрока или есть проблема с перком."};
         } 
@@ -106,7 +124,7 @@ public:
         for (int i = 0; i < resource_array.size(); i++) {
             currency_array[city_id] += city.get_price(resource_array[i]);   
         }
-        city.pre_sell(player, resource_array)
+        city.pre_sell(player, resource_array);
         player.change_currencies(currency_array); 
         player.change_resources(changed_sign(resource_array));
         city.change_available_for_buy_resources(changed_sign(resource_array));
@@ -115,7 +133,7 @@ public:
     }
 
     void init() {
-        auto bool_pass[](Player& p, std::vector<int> resources) {return true;}
+        auto bool_pass = [](Player& p, std::vector<int> resources) {return true;};
         auto pass = [](Player& p, std::vector<int> resources){return;};
         cities.push_back(City(0, {{1.4132, 0, -0.4548, 1000}, //Варант
                                 {0.4843, 0, -0.4936, 1000},
@@ -128,7 +146,7 @@ public:
                                 {100, 0, -1, 1000000},
                                 {100, 0, -1, 1000000},
                                 {100, 0, -1, 1000000}
-        }, bool_pass, pass, ..., pass, ...)); // после сделки нужно уменьшить золото на 10%
+        }, bool_pass, pass, pass, pass, pass)); // после сделки нужно уменьшить золото на 10%
         cities.push_back(City(1, {{0.5947, 0, -0.1812, 1000}, // Либерти
                                 {0.0344, 0, -0.3021, 1000},
                                 {0.0685, 0, -0.2159, 1000},
@@ -140,7 +158,7 @@ public:
                                 {0.0001, 0, -0.0001, 100},
                                 {100, 0, -1, 1000000},
                                 {100, 0, -1, 1000000}
-        }, bool_pass, pass, pass, ..., pass)); // Перед покупкой нужно проверить на вино
+        }, bool_pass, pass, pass, pass, pass)); // Перед покупкой нужно проверить на вино
         cities.push_back(City(2, {{0.0954, 0, -0.1019, 1000}, // Мордор
                                 {0.1033, 0, -0.0131, 1000},
                                 {0.1750, 0, -0.0258, 1000},
@@ -152,7 +170,7 @@ public:
                                 {100, 0, -1, 1000000},
                                 {0.0001, 0, -0.0001, 100},
                                 {100, 0, -1, 1000000}
-        }, ..., pass, pass, pass, pass)); // Нетривиальная проверка
+        }, bool_pass, pass, pass, pass, pass)); // Нетривиальная проверка
         cities.push_back(City(3, {{0.0964, 0, -0.1067, 1000}, // Кель-Талас
                                 {0.0914, 0, -0.1035, 1000},
                                 {0.1615, 0, -0.0525, 1000},
@@ -164,7 +182,7 @@ public:
                                 {100, 0, -1, 1000000},
                                 {100, 0, -1, 1000000},
                                 {0.0001, 0, -0.0001, 100}
-        }, ..., pass, pass, pass, pass)); // Нетривиальная проверка
+        }, bool_pass, pass, pass, pass, pass)); // Нетривиальная проверка
     }
 
     void init(std::string filename) {
@@ -184,8 +202,9 @@ public:
     std::vector<Player> players;
     std::vector<City> cities;
     std::vector<War> wars;
-    int current_round;
+    int current_round; 
 private:
-    Game() = default;
-    static Game* game; 
+    Game() = default; 
+    static Game* game;
 };
+

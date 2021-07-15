@@ -1,4 +1,7 @@
 #include "Game.h"
+
+Game* Game::game = nullptr;
+
 std::vector<int> Game::get_player_army(int id){
     if(id<0){
         return cities[-id-1].army;
@@ -10,10 +13,10 @@ std::vector<int> Game::get_player_army(int id){
 
 int Game::get_player_strat(int id){
     if(id<0){
-        return cities[-id-1].strat;
+        return cities[-id-1].strategy;
     }
     else{
-        return players[id].strat;
+        return players[id].strategy;
     }
 }
 
