@@ -3,6 +3,7 @@
 #include <functional>
 #include "Player.h"
 #include <vector>
+#include <fstream>
 
 //S_k * P + S_b(=0) + y_delta = D_k * P + D_b
 //P = (D_b - y_delta) / (S_k - D_k)
@@ -36,6 +37,13 @@ struct City {
         post_sell = post_sell1;
         army = {1000, 1000, 1000};
         strategy = 3;
+    }
+
+    void show(){
+        std::cout<<"id: "<<id<<std::endl;
+        for(auto i:items)
+            std::cout<<i.countP()<<" ";
+        std::cout<<std::endl;
     }
     
     int id;
@@ -76,5 +84,44 @@ struct City {
             items[i].y_delta += delta_per_round[i];
             delta_per_round[i] = 0;
         }
-    } 
+    }
+    template <typename T>
+    void print(std::ofstream& file, std::vector<T> v) {
+        file << v.size() << " ";
+        for (auto t: v) 
+            file << t << " ";
+        file << std::endl;
+    }
+    void dumpload(std::ofstream& file) {
+        file << id << std::endl;
+        file << items.size() << " ";
+        for (int i = 0; i < items.size(); i++) {
+            file << items[i].y_delta << " "; 
+        }
+        file << std::endl;
+        print(file, delta_per_round);
+        print(file, army);
+        file << strategy << std::endl;
+        file << std::endl; 
+    }
+    template<typename T>
+    void read(std::ifstream& file, std::vector<T>& v) {
+        int size = 0;
+        file >> size;
+        v.resize(size);
+        for (auto& t: v) {
+            file >> t;
+        }
+    }
+    void load(std::ifstream& file) {
+        file >> id;
+        int size = 0;
+        file >> size;
+        for (int i = 0; i < items.size(); i++) {
+            file >> items[i].y_delta;
+        }
+        read(file, delta_per_round);
+        read(file, army);
+        file >> strategy;
+    }    
 };

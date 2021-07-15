@@ -6,6 +6,7 @@
 #include "Response.h"
 #include <string>
 #include <vector>
+#include <fstream>
 
 template <typename T>
 std::vector<T> changed_sign(std::vector<T> v) {
@@ -104,7 +105,7 @@ public:
         City& city = cities[city_id];
         std::vector<double> currency_array(4); 
         for (int i = 0; i < resource_array.size(); i++) {
-            currency_array[city_id] += city.get_price(resource_array[i]);   
+            currency_array[city_id] += city.get_price(i) * resource_array[i];   
         }      
         bool accepted = player.check_available_currencies(currency_array) && city.accept(player, resource_array);
         if (!accepted) {
@@ -128,7 +129,7 @@ public:
         } 
         std::vector<double> currency_array(4);
         for (int i = 0; i < resource_array.size(); i++) {
-            currency_array[city_id] += city.get_price(resource_array[i]);   
+            currency_array[city_id] += city.get_price(i) * resource_array[i];   
         }
         city.pre_sell(player, resource_array);
         player.change_currencies(currency_array); 
@@ -191,12 +192,31 @@ public:
         }, bool_pass, pass, pass, pass, pass)); // Нетривиальная проверка
     }
 
-    void init(std::string filename) {
-         
+    void dumpload(std::string filename) {
+        std::ofstream file;
+        file.open(filename);
+        file << players.size() << std::endl;
+        for (auto& player: players) 
+            player.dumpload(file);
+        for (auto& city: cities)
+            city.dumpload(file);
+        file.close();
     }
     
-    void record(std::string filename) {
-        
+    void load(std::string filename) {
+        std::ifstream file;
+        file.open(filename);
+        int player_count = 0;
+        file >> player_count;
+        for (int i = 0; i < player_count; i++) {
+            register_player();
+        }
+        for (auto& player: players) { 
+            player.load(file);
+        }
+        for (auto& city: cities)
+            city.load(file);
+        file.close();
     }
 
     static Game& current() {
@@ -205,10 +225,20 @@ public:
         }
         return *game;
     }
+    
     std::vector<Player> players;
     std::vector<City> cities;
     std::vector<War> wars;
-    int current_round; 
+    int current_round;
+    
+    Response declare_war(int id_att, int id_def){
+        bool flag=1;
+        for(auto& war:wars) flag=(flag and war.attacker_id!=id_att or war.defender_id!=id_def);
+        if(!flag)
+            return Response{0,"Такая война уже объявлена"};
+        wars.push_back(War(id_att,id_def));
+        return Response{1,"Всё чикипуки"};
+    } 
 private:
     Game() = default; 
     static Game* game;

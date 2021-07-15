@@ -4,36 +4,97 @@
 #include <vector>
 #include <set>
 #include <string>
+#include <fstream>
 
 struct Player {
     template <typename T>
-    void print(std::string name, std::vector<T> v) {
+    void show(std::string name, std::vector<T> v) {
         std::cout << name << ": ";
         for (auto t: v) 
             std::cout << t << " ";
         std::cout << std::endl;
     }
     template <typename T>
-    void print(std::string name, std::set<T> v) {
+    void show(std::string name, std::set<T> v) {
         std::cout << name << ": ";
         for (auto t: v) 
             std::cout << t << " ";
         std::cout << std::endl;
     }
-    void print() {
+    void show() {
         std::cout << id << std::endl;
-        print("curr", currencies);
-        print("res", resources);
-        print("builds", building_levels);
-        print("treaties0", treaties[0]);
-        print("treaties1", treaties[1]);
-        print("army", army);
+        show("curr", currencies);
+        show("res", resources);
+        show("builds", building_levels);
+        show("treaties0", treaties[0]);
+        show("treaties1", treaties[1]);
+        show("army", army);
         std::cout << "last_attack: " << last_attack << std::endl;
         std::cout << "ban: " << ban << std::endl;
         std::cout << "strategy: " << strategy << std::endl;
         std::cout << std::endl; 
     }
 
+
+    template <typename T>
+    void print(std::ofstream& file, std::vector<T> v) {
+        file << v.size() << " ";
+        for (auto t: v) 
+            file << t << " ";
+        file << std::endl;
+    }
+    
+    template <typename T>
+    void print(std::ofstream& file, std::set<T> v) {
+        file << v.size() << " ";
+        for (auto t: v) 
+            file << t << " ";
+        file << std::endl;
+    }
+    void dumpload(std::ofstream& file) {
+        file << id << std::endl;
+        print(file, currencies);
+        print(file, resources);
+        print(file, building_levels);
+        print(file, treaties[0]);
+        print(file, treaties[1]);
+        print(file, army);
+        file << last_attack << std::endl;
+        file << ban << std::endl;
+        file << strategy << std::endl;
+        file << std::endl; 
+    }    
+    template <typename T>
+    void read(std::ifstream& file, std::vector<T>& v) {
+        int size = 0;
+        file >> size;
+        v.resize(size);
+        for (auto& t: v) 
+            file >> t;
+    }
+    
+    template <typename T>
+    void read(std::ifstream& file, std::set<T>& v) {
+        int size = 0;
+        file >> size;
+        for (int i = 0; i < size; i++) { 
+            T x;
+            file >> x;
+            v.insert(x);
+        }
+    }
+    void load(std::ifstream& file) {
+        file >> id;
+        read(file, currencies);
+        read(file, resources);
+        read(file, building_levels);
+        read(file, treaties[0]);
+        read(file, treaties[1]);
+        read(file, army);
+        file >> last_attack;
+        file >> ban;
+        file >> strategy;
+    }
     Player(int id1) {
         id = id1;
         currencies = std::vector<double>(4);
