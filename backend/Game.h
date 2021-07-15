@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <deque>
 
 template <typename T>
 std::vector<T> changed_sign(std::vector<T> v) {
@@ -228,7 +229,7 @@ public:
     
     std::vector<Player> players;
     std::vector<City> cities;
-    std::vector<War> wars;
+    std::deque<War> wars;
     int current_round;
     
     Response declare_war(int id_att, int id_def){
@@ -238,7 +239,47 @@ public:
             return Response{0,"Такая война уже объявлена"};
         wars.push_back(War(id_att,id_def));
         return Response{1,"Всё чикипуки"};
-    } 
+    }
+
+    Response add_top_war(int is_attack, int id){
+        bool flag=1;
+        for(auto i:wars.front().a_side_ids){
+            flag=(flag && i!=id);
+        }
+        for(auto i:wars.front().d_side_ids){
+            flag=(flag && i!=id);
+        }
+        if(!flag) return Response{0,"уже зареган в войну"};
+        if(is_attack==0){
+            wars.front().add_attacker(id);
+        }
+        else{
+            wars.front().add_defender(id);
+        }
+    }
+
+    Response proceed_top_war(){
+        if(wars.size()==0) return Response{0,"Нет воин"};
+        if(wars.front().step==4){
+            wars.pop_front();
+            return Response{1,"Война закончена все посчитатно"};
+        }
+        wars.front().progress_war();
+        return {1,"Война продвинулась(вроде)"};
+    }
+
+    Response concede_top_war(int attack_won){
+        if(wars.size()==0) return Response{0,"Нет воин"};
+        wars.front().step=4;
+        wars.front().someone_won(attack_won);
+        wars.pop_front();
+        return Response{1,"Война закончена все посчитатно"};
+    }
+    Response stop_top_war(){
+        if(wars.size()==0) return Response{0,"Нет воин"};
+        wars.pop_front();
+        return Response{1,"Война закончилась миром"};
+    }
 private:
     Game() = default; 
     static Game* game;
