@@ -3,6 +3,7 @@
 #include <functional>
 #include "Player.h"
 #include <vector>
+
 //S_k * P + S_b(=0) + y_delta = D_k * P + D_b
 //P = (D_b - y_delta) / (S_k - D_k)
 struct Plot {

@@ -5,30 +5,29 @@
 #include <set>
 #include <string>
 
-/*void p(std::string name, std::vector<double> v) {
-    std::cout << name << ": ";
-    for (auto t: v) 
-        std::cout << t << " ";
-    std::cout << std::endl;
-}
-
-void p(std::string name, std::vector<int> v) {
-    std::cout << name << ": ";
-    for (auto t: v) 
-        std::cout << t << " ";
-    std::cout << std::endl;
-}*/
-
 struct Player {
-
+    template <typename T>
+    void print(std::string name, std::vector<T> v) {
+        std::cout << name << ": ";
+        for (auto t: v) 
+            std::cout << t << " ";
+        std::cout << std::endl;
+    }
+    template <typename T>
+    void print(std::string name, std::set<T> v) {
+        std::cout << name << ": ";
+        for (auto t: v) 
+            std::cout << t << " ";
+        std::cout << std::endl;
+    }
     void print() {
         std::cout << id << std::endl;
-        //p("curr", currencies);
-        //p("res", resources);
-        //p("builds", building_levels);
-        // print("treaties0", treaties[0]);
-        // print("treaties1", treaties[1]);
-        //p("army", army);
+        print("curr", currencies);
+        print("res", resources);
+        print("builds", building_levels);
+        print("treaties0", treaties[0]);
+        print("treaties1", treaties[1]);
+        print("army", army);
         std::cout << "last_attack: " << last_attack << std::endl;
         std::cout << "ban: " << ban << std::endl;
         std::cout << "strategy: " << strategy << std::endl;

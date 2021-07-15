@@ -6,7 +6,7 @@ int main() {
     int pid2 = Game::current().register_player().int_number;
     Game::current().players[0].print();
     Game::current().players[1].print();
-    // start_cycle();
-    // Game::current().trade(pid1,)
-    // end_cycle();
+    Game::current().start_cycle();
+    // Game::current().trade(0, {0})
+    Game::current().end_cycle();
 }

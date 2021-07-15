@@ -37,6 +37,7 @@ public:
             player.last_attack++;
             player.ban = 0;
         }
+        return Response{true, "Цикл окончен."};
     }
  
     Response register_player() {
@@ -63,7 +64,12 @@ public:
         p1.change_currencies(changed_sign(currencies1));
         p1.change_resources(changed_sign(resources1));
         p2.change_currencies(changed_sign(currencies2));
-        p2.change_resources(changed_sign(resources2)); 
+        p2.change_resources(changed_sign(resources2));
+        p1.change_currencies(currencies2);
+        p1.change_resources(resources2);
+        p2.change_currencies(currencies1);
+        p2.change_resources(resources1);
+         
         return Response{true, "Успешно."};
     }
 
