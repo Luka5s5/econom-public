@@ -23,6 +23,109 @@ public:
     std::vector<int> get_player_army(int id);
     int get_player_strat(int id);
     void kill_troop(int id, int troop_type);
+   
+    Response upgrade_building(int player_id, std::vector<int> buildings) {
+        Player& player = players[player_id];
+        bool accepted = true;
+        std::vector<int> resources(11);
+        resources[1] += 8 * player.building_levels[0] * buildings[0];
+        resources[3] += 6 * player.building_levels[0] * buildings[0]; 
+
+        resources[1] += 8 * player.building_levels[1] * buildings[1];
+        resources[3] += 6 * player.building_levels[1] * buildings[1]; 
+
+        resources[1] += 8 * player.building_levels[2] * buildings[2];
+        resources[3] += 6 * player.building_levels[2] * buildings[2];
+
+        resources[1] += 8 * player.building_levels[3] * buildings[3];
+        resources[2] += 8 * player.building_levels[3] * buildings[3]; 
+
+        resources[1] += 4 * player.building_levels[4] * buildings[4];
+        resources[4] += 2 * player.building_levels[4] * buildings[4]; 
+        resources[2] += 1 * player.building_levels[4] * buildings[4];
+
+        resources[4] += 8 * player.building_levels[5] * buildings[5];
+        resources[3] += 10 * player.building_levels[5] * buildings[5]; 
+        resources[2] += 1 * player.building_levels[5] * buildings[5];
+
+        resources[2] += 8 * player.building_levels[6] * buildings[6];
+        resources[0] += 8 * player.building_levels[6] * buildings[6]; 
+        resources[3] += 20 * player.building_levels[6] * buildings[6];
+
+        resources[2] += (10 * player.building_levels[7] + 10) * buildings[7];
+        resources[0] += (10 * player.building_levels[7] + 10) * buildings[7]; 
+        resources[3] += (10 * player.building_levels[7] + 10) * buildings[7];
+        resources[9] += (player.building_levels[7] + 1) * buildings[7];
+
+
+        resources[2] += (10 * player.building_levels[8] + 10) * buildings[8];
+        resources[0] += (10 * player.building_levels[8] + 10) * buildings[8]; 
+        resources[1] += (10 * player.building_levels[8] + 10) * buildings[8];
+        resources[10] += (player.building_levels[8] + 1) * buildings[8];
+
+
+        resources[0] += (20 * player.building_levels[9] + 20) * buildings[9];
+        resources[6] += (10 * player.building_levels[9] + 10) * buildings[9]; 
+        resources[8] += (player.building_levels[9] + 1) * buildings[9];
+
+
+        resources[3] += (20 * player.building_levels[10] + 20) * buildings[10];
+        resources[0] += (10 * player.building_levels[10] + 10) * buildings[10]; 
+        resources[7] += (player.building_levels[10] + 1) * buildings[10];
+
+
+        accepted = accepted && player.check_available_resources(resources);
+        if (!accepted) {
+            return Response{false, "Недостаточно ресурсов"};
+        }
+        player.change_resources(changed_sign(resources));
+        player.change_buildings(buildings);
+        return Response{true, "Успешно."};
+    }
+
+    Response upgrade_army(int player_id, std::vector<int> army) {
+        Player& player = players[player_id];
+        bool accepted = true;
+        std::vector<int> resources(11);
+        resources[1] += army[0];
+        resources[4] += army[0];
+        resources[5] += army[0];
+
+        resources[1] += army[1];
+        resources[5] += army[1];
+        resources[6] += army[1];
+
+        resources[1] += army[2];
+        resources[3] += army[2];
+        resources[5] += army[2];
+        accepted = accepted && player.check_available_resources(resources);
+        if (!accepted) {
+            return Response{false, "Недостаточно ресурсов"};
+        }
+        player.change_resources(changed_sign(resources));
+        player.change_army(army); 
+        return Response{true, "Армия пополнена"};
+    } 
+ 
+    Response set_strategy(int player_id, int new_strategy) {
+        players[player_id].strategy = new_strategy;
+        return Response{true, "Стратегия изменена"};
+    }
+
+    Response get_victory_points(int player_id) {
+        Player& player = players[player_id];
+        int answer = 0;
+        for (int i = 0; i < 7; i++) {
+            answer += player.building_levels[i];
+        }
+        for (int i = 7; i < 9; i++) {
+            answer += player.building_levels[i] * 2;
+        }
+        for (int i = 9; i < 11; i++) {
+            answer += player.building_levels[i] * 3;
+        }
+        return Response{true, "Посчитано.", answer}; 
+    }
 
     Response start_cycle() {
         for (auto& city: cities) {
@@ -108,7 +211,7 @@ public:
         for (int i = 0; i < resource_array.size(); i++) {
             currency_array[city_id] += city.get_price(i) * resource_array[i];   
         }      
-        bool accepted = player.check_available_currencies(currency_array) && city.accept(player, resource_array);
+        bool accepted = player.check_available_currencies(currency_array) && city.accept(player, resource_array) && (player.ban == 0);
         if (!accepted) {
             return Response{false, "Недостаточно ресурсов игрока или есть проблема с перком."};
         }
@@ -124,7 +227,10 @@ public:
         Player& player = players[player_id];
         City& city = cities[city_id]; 
         bool accepted = city.check_available_for_buy_resources(resource_array) &&
-                        city.accept(player, resource_array) && player.check_available_resources(resource_array);
+                        city.accept(player, resource_array) &&
+                        player.check_available_resources(resource_array) &&
+                        (player.ban == 0);
+        
         if (!accepted) {
             return Response{false, "Нет спроса или недостаточно ресурсов игрока или есть проблема с перком."};
         } 
@@ -193,7 +299,7 @@ public:
         }, bool_pass, pass, pass, pass, pass)); // Нетривиальная проверка
     }
 
-    void dumpload(std::string filename) {
+    Response dumpload(std::string filename) {
         std::ofstream file;
         file.open(filename);
         file << players.size() << std::endl;
@@ -202,9 +308,10 @@ public:
         for (auto& city: cities)
             city.dumpload(file);
         file.close();
+        return Response{true, "Записано в " + filename};
     }
     
-    void load(std::string filename) {
+    Response load(std::string filename) {
         std::ifstream file;
         file.open(filename);
         int player_count = 0;
@@ -218,6 +325,7 @@ public:
         for (auto& city: cities)
             city.load(file);
         file.close();
+        return Response{true, "Считано из " + filename};
     }
 
     static Game& current() {

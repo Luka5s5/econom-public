@@ -82,6 +82,7 @@ struct City {
     void update_plots() {
         for (int i = 0; i < items.size(); i++) {
             items[i].y_delta += delta_per_round[i];
+            items[i].y_delta /= 2;
             delta_per_round[i] = 0;
         }
     }
