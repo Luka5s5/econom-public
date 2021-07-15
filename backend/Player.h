@@ -32,6 +32,7 @@ struct Player {
         std::cout << "last_attack: " << last_attack << std::endl;
         std::cout << "ban: " << ban << std::endl;
         std::cout << "strategy: " << strategy << std::endl;
+        show("city_used", city_used);
         std::cout << std::endl; 
     }
 
@@ -62,6 +63,7 @@ struct Player {
         file << last_attack << std::endl;
         file << ban << std::endl;
         file << strategy << std::endl;
+        print(file, city_used);
         file << std::endl; 
     }    
     template <typename T>
@@ -94,6 +96,7 @@ struct Player {
         file >> last_attack;
         file >> ban;
         file >> strategy;
+        read(file, city_used);
     }
     Player(int id1) {
         id = id1;
@@ -108,6 +111,7 @@ struct Player {
         last_attack = 100;
         ban = 0; 
         strategy = 3;
+        city_used.resize(4);
     }
     int id;
     std::vector<double> currencies;
@@ -118,6 +122,8 @@ struct Player {
     int last_attack;
     int ban;
     int strategy;
+    std::vector<int> city_used;
+
     void mine_resources() {
         resources[0] += building_levels[0] * 4;
         resources[1] += building_levels[1] * 8;
@@ -136,6 +142,16 @@ struct Player {
             resources[i] += building_levels[9] * 2;
         }
         resources[6] += building_levels[8] * (building_levels[6] + 1); 
+    }
+    void change_buildings(std::vector<int> delta) {
+        for (int i = 0; i < delta.size(); i++) {
+            building_levels[i] += delta[i];
+        }
+    }
+    void change_army(std::vector<int> delta) {
+        for (int i = 0; i < delta.size(); i++) {
+            army[i] += delta[i];
+        }
     }
     bool check_available_currencies(std::vector<double> required) {
         return less_or_equal(required, currencies);
