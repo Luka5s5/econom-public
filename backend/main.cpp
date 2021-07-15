@@ -15,8 +15,38 @@ server print_server;
 void on_message(websocketpp::connection_hdl conn, server::message_ptr msg) {
     std::cout << "~~~~~ " << msg->get_payload() << std::endl;
     auto j = json::parse(msg->get_payload());
-    std::cout << "~~ " << j["energy"] << std::endl;
-    print_server.send(conn,"Helloworld",msg->get_opcode());
+    if(j["type"] == "update-all"){
+        json response;
+        std::cout << "1\n";
+        response["resource_names"] = {"iron","gold","copper","lumber","grain","meat","wine"};
+        std::cout << "1\n";
+        response["teamlist"] = {
+            json::object({{"name","team1"},{"id",1}}),
+            json::object({{"name","team2"},{"id",2}})
+        };
+        std::cout << "1\n";
+        response["cities"] = json::array({
+            json::object({{"resources",json::array({
+                json::object({{"limit",500},{"price",100}}),
+                json::object({{"limit",50},{"price",10}}),
+                json::object({{"limit",500},{"price",100}}),
+                json::object({{"limit",50},{"price",10}}),
+                json::object({{"limit",500},{"price",100}}),
+                json::object({{"limit",50},{"price",10}}),
+                json::object({{"limit",50},{"price",10}})
+            })},{"name","varant"},{"id",0}}),
+            json::object({{"resources",json::array({
+                json::object({{"limit",5000},{"price",100}}),
+                json::object({{"limit",500},{"price",10}}),
+                json::object({{"limit",5000},{"price",100}}),
+                json::object({{"limit",500},{"price",100}}),
+                json::object({{"limit",5000},{"price",1000}}),
+                json::object({{"limit",50},{"price",10000}}),
+                json::object({{"limit",500},{"price",10}})
+            })},{"name","liberty"},{"id",1}})
+        });
+        print_server.send(conn,response.dump(),msg->get_opcode());
+    }
 }
 
 int main() {

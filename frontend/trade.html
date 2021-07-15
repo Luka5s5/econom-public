@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body { 
+    height: 97%;
+    width: 99%;
+}    
+    
+.btn {
+  border: none; /* Remove borders */
+  color: white; /* Add a text color */
+  padding: 14px 28px; /* Add some padding */
+  cursor: pointer; /* Add a pointer cursor on mouse-over */
+  margin: 4px 2px;
+  border-radius: 5px;
+}
+
+.sell {background-color: #04AA6D;} /* Green */
+.sell:hover {background-color: #46a049;}
+
+.buy {background-color: #f44336;} /* Red */
+.buy:hover {background: #da190b;}
+</style>
+		
+</head>
+   
+<body>
+
+<div>
+Город: <select name="city" id="city" class="city-selector"></select>
+</div>
+<div>
+Команда: <select name="team" id="team" class="team-selector"></select>
+</div>
+<div id="resources_list"></div>
+<hr>
+<label id="total">Игрок получит 0</label>
+<button id="submit">Совершить сделку</button>
+
+<script type = "text/javascript">
+const buy = "Игрок покупает ";
+const sell = "Игрок продаёт ";
+
+function updateTotal(){
+    const total = document.getElementById("total");
+    const mydiv = document.getElementById("resources_list");
+    let z = 0;
+    for(let el of mydiv.getElementsByTagName("p")){
+        let abs = Number(el.getElementsByClassName("amount-input")[0].value);
+        abs *= Number(el.getElementsByClassName("resource-price")[0].innerHTML);
+        abs *= el.getElementsByTagName("button")[0].innerHTML == buy ? -1 : 1;
+        z += abs;
+    }
+    if(z >= 0){
+        total.innerHTML = "Игрок должен получить " + z;
+    }else{
+        total.innerHTML = "Игрок должен заплатить " + (-z);
+    }
+}
+
+document.getElementById("submit").onclick = function(){
+    const mydiv = document.getElementById("resources_list");
+    let msg = {};
+    msg.type = "trade";
+    msg.city = document.getElementById("city").value;
+    msg.resources = [];
+    for(let el of mydiv.getElementsByTagName("p")){
+        let idx = el.getElementsByClassName("resource-price")[0].dataset.resource;
+        let val = Number(el.getElementsByTagName("input")[0].value);
+        val *= el.getElementsByTagName("button")[0].innerHTML == buy ? -1 : 1;
+        msg.resources[idx] = val;
+    }
+    msg.team = document.getElementById("team").value;
+    ws.send(JSON.stringify(msg));
+}
+
+function update(){
+    const mydiv = document.getElementById("resources_list");
+    if(mydiv.getElementsByTagName("p") != null && mydiv.getElementsByTagName("p").length != 0)
+        return;
+    for(var i = 0; i < resource_names.length; i++){
+        var container = document.createElement("p");
+        mydiv.appendChild(container);
+        var lname = document.createElement("label");
+        lname.innerHTML = resource_names[i];
+        container.appendChild(lname);
+        var price = document.createElement("label");
+        price.classList.add("resource-price");
+        price.classList.add("city-dependent");
+        price.setAttribute("data-resource", i);
+        container.appendChild(price);
+        var btn = document.createElement("button");
+        btn.setAttribute("class","btn sell");
+        btn.innerHTML = sell
+        container.appendChild(btn);
+        var amount = document.createElement("input");
+        amount.classList.add("amount-input");
+        container.appendChild(amount);
+        var delim = document.createElement("label");
+        delim.classList.add("hide-by-button");
+        delim.innerHTML = "/";
+        container.appendChild(delim);
+        var limit = document.createElement("label");
+        limit.classList.add("resource-limit");
+        limit.classList.add("city-dependent");
+        limit.classList.add("hide-by-button");
+        limit.setAttribute("data-resource", i);
+        container.appendChild(limit);
+        btn.onclick = function() {
+            if(this.innerHTML == buy){
+                this.setAttribute("class","btn sell");
+                this.innerHTML = sell
+                for(el of this.parentElement.getElementsByClassName("hide-by-button")){
+                    el.style.display = "inline";
+                }
+            }else{
+                this.setAttribute("class","btn buy");
+                this.innerHTML = buy
+                for(el of this.parentElement.getElementsByClassName("hide-by-button")){
+                    el.style.display = "none";
+                }
+            }
+            updateTotal();
+        }
+        amount.onchange = function() {
+            updateTotal();
+        }
+    }
+}
+</script>
+
+<script type = "text/javascript" src="lib.js?version=1">
+</script>
+
+</body>
+</html> 
+ 
