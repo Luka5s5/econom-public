@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body { 
+    height: 97%;
+    width: 99%;
+}    
+    
+.btn {
+  border: none; /* Remove borders */
+  color: white; /* Add a text color */
+  padding: 14px 28px; /* Add some padding */
+  cursor: pointer; /* Add a pointer cursor on mouse-over */
+  margin: 4px 2px;
+  border-radius: 5px;
+}
+
+.whiteobject {
+    border-color: ;
+}
+.whiteobject:hover {
+    background-color: #04AA6D;
+}
+
+.success {background-color: #04AA6D;} /* Green */
+.success:hover {background-color: #46a049;}
+
+.warning {background-color: #ff9800;} /* Orange */
+.warning:hover {background: #e68a00;}
+
+.danger {background-color: #f44336;} /* Red */
+.danger:hover {background: #da190b;}
+</style>
+		
+</head>
+   
+<body>
+<button id="add-energy" class="btn whiteobject">Send</button>
+<script type = "text/javascript">
+
+var host = window.location.hostname;
+var ws = new WebSocket("ws://"+host+":9002");
+                
+ws.onopen = function() {
+    console.log("onopen... ");
+};
+                
+ws.onmessage = function (evt) { 
+    console.log("onmessage: " + evt.data);
+};
+                
+ws.onclose = function() { 
+    alert("Connection is closed..."); 
+};
+
+document.getElementById("add-energy").onclick = function(){
+    var msg = {"command": "add-energy", "energy": 100};
+    ws.send(JSON.stringify(msg));
+};
+
+</script>
+
+</body>
+</html> 
+ 
