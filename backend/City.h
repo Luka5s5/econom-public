@@ -6,6 +6,8 @@
 #include <fstream>
 
 //S_k * P + S_b(=0) + y_delta = D_k * P + D_b
+//100 * P + 0 + 0 = -1 * P + 10000000
+// P 
 //P = (D_b - y_delta) / (S_k - D_k)
 struct Plot {
     double S_k;
@@ -22,19 +24,16 @@ struct Plot {
 };
 
 struct City {
-    City(int id1, std::vector<std::vector<double>> plots, std::function<bool(Player&, std::vector<int>)> accept1,
-                std::function<void(Player&, std::vector<int>)> pre_buy1, std::function<void(Player&, std::vector<int>)> post_buy1,
-                std::function<void(Player&, std::vector<int>)> pre_sell1, std::function<void(Player&, std::vector<int>)> post_sell1) {
+    City(int id1, std::vector<std::vector<double>> plots, std::function<bool(Player&, std::vector<int>&)> accept1,
+                std::function<void(Player&, std::vector<int>&)> pre_action1, std::function<void(Player&, std::vector<int>&)> post_action1) {
         id = id1;
         for (int i = 0; i < plots.size(); i++) {
             items.push_back(Plot{plots[i][0], (int)plots[i][1], plots[i][2], (int)plots[i][3]});
         }
         delta_per_round = std::vector<int>(11);
         accept = accept1;
-        pre_buy = pre_buy1;
-        post_buy = post_buy1;
-        pre_sell = pre_sell1;
-        post_sell = post_sell1;
+        pre_action = pre_action1;
+        post_action = post_action1;
         army = {1000, 1000, 1000};
         strategy = 3;
     }
@@ -42,18 +41,16 @@ struct City {
     void show(){
         std::cout<<"id: "<<id<<std::endl;
         for(auto i:items)
-            std::cout<<i.countP()<<" ";
+            std::cout << i.countP() << " ";
         std::cout<<std::endl;
     }
     
     int id;
     std::vector<Plot> items;
     std::vector<int> delta_per_round;
-    std::function<bool(Player&, std::vector<int>)> accept;
-    std::function<void(Player&, std::vector<int>)> pre_buy;
-    std::function<void(Player&, std::vector<int>)> post_buy;
-    std::function<void(Player&, std::vector<int>)> pre_sell;
-    std::function<void(Player&, std::vector<int>)> post_sell;
+    std::function<bool(Player&, std::vector<int>&)> accept;
+    std::function<void(Player&, std::vector<int>&)> pre_action;
+    std::function<void(Player&, std::vector<int>&)> post_action;
     
     std::vector<int> army;
     int strategy;
@@ -70,7 +67,7 @@ struct City {
     }
     void change_available_for_buy_resources(std::vector<int> delta) { 
         for (int i = 0; i < delta.size(); i++) {
-            delta_per_round[i] += delta[i];
+            delta_per_round[i] -= delta[i];
         }
     }
     int get_limit_Q(int res_id) {

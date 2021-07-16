@@ -33,6 +33,7 @@ struct Player {
         std::cout << "ban: " << ban << std::endl;
         std::cout << "strategy: " << strategy << std::endl;
         show("city_used", city_used);
+        show("building_used", building_used);
         std::cout << std::endl; 
     }
 
@@ -64,6 +65,7 @@ struct Player {
         file << ban << std::endl;
         file << strategy << std::endl;
         print(file, city_used);
+        print(file, building_used);
         file << std::endl; 
     }    
     template <typename T>
@@ -97,6 +99,7 @@ struct Player {
         file >> ban;
         file >> strategy;
         read(file, city_used);
+        read(file, building_used);
     }
     Player(int id1) {
         id = id1;
@@ -112,6 +115,7 @@ struct Player {
         ban = 0; 
         strategy = 3;
         city_used.resize(4);
+        building_used.resize(11);
     }
     int id;
     std::vector<double> currencies;
@@ -123,6 +127,7 @@ struct Player {
     int ban;
     int strategy;
     std::vector<int> city_used;
+    std::vector<int> building_used;
 
     void mine_resources() {
         resources[0] += building_levels[0] * 4;

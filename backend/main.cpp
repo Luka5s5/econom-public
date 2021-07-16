@@ -17,61 +17,75 @@ void test2() {
     Game::current().dumpload("test2.txt");
 }
 
-void test3() {
+void test4() {
     Game::current().init();
-    int pid1 = Game::current().register_player().int_number;
-    int pid2 = Game::current().register_player().int_number;
-    Game::current().players[0].show();
-    Game::current().players[1].show();
+    Game::current().register_player();
+    Game::current().register_player();
+    
     Game::current().start_cycle();
+    std::cout << Game::current().trade(0,{0,0,0,0},{1,0,0,0,0,0,0,0,0,0,0},1,{0,0,0,0},{0,1,0,0,0,0,0,0,0,0,0}).response << std::endl;
+    std::cout << Game::current().trade(0,{1,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},1,{0,1,0,0},{0,0,0,0,0,0,0,0,0,0,0}).response << std::endl; 
+    Game::current().players[0].show();
+    Game::current().players[1].show();
     Game::current().end_cycle();
+    std::cout << "----------------------------" << std::endl; 
+    
     Game::current().start_cycle();
+    std::cout << Game::current().add_treaty(0, 1, 0).response << std::endl;
+    std::cout << Game::current().add_treaty(0, 1, 0).response << std::endl;
+    std::cout << Game::current().remove_treaty(0, 1, 0).response << std::endl;
+    std::cout << Game::current().remove_treaty(0, 1, 0).response << std::endl;
+    std::cout << Game::current().add_treaty(0, 1, 1).response << std::endl;
+    Game::current().players[0].show();
+    Game::current().players[1].show();
     Game::current().end_cycle();
+    std::cout << "----------------------------" << std::endl;
+
+    
     Game::current().start_cycle();
+    Game::current().players[0].show();
+    Game::current().cities[0].show();
+    std::cout << Game::current().sell_query(0, 0, {10,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
+    std::cout << Game::current().sell_query(0, 0, {1000000,0,0,0,0,0,0,0,0,0,0}).response << std::endl; 
+    Game::current().players[0].show();
+    Game::current().cities[0].show();
     Game::current().end_cycle();
-    Game::current().players[0].show();
-    Game::current().players[1].show();
-    Game::current().trade(0, {0,0,0,0},{13,0,0,0,0,0,0,0,0,0,0},1,{0,0,0,0},{1,0,0,0,0,0,0,0,0,0,0});
-    std::cout<<"Traded\n";
-    Game::current().players[0].show();
-    Game::current().players[1].show();
-    Game::current().add_treaty(0,1,0);
-    Game::current().add_treaty(0,1,1);
-    Game::current().players[0].show();
-    Game::current().players[1].show();
-    Game::current().remove_treaty(0,1,0);
-    Game::current().players[0].show();
-    Game::current().players[1].show();
-    Game::current().remove_treaty(0,1,0);
-    Game::current().remove_treaty(0,1,0);
-    Game::current().add_treaty(0,1,1);
-    Game::current().remove_treaty(0,1,0);
-    Game::current().players[0].show();
-    Game::current().players[1].show();
-    for(int i=0;i<4;i++){
-        Game::current().cities[i].show();
-    }
-    Game::current().sell_query(1,0,{10,0,0,0,0,0,0,0,0,0,0});
-    Game::current().players[1].show();
-    for(int i=0;i<4;i++){
-        Game::current().cities[i].show();
-    }
+    std::cout << "----------------------------" << std::endl;
+
+
     Game::current().start_cycle();
+    Game::current().players[0].show();
+    Game::current().cities[0].show();
+    std::cout << Game::current().sell_query(0, 0, {-1,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
+    std::cout << Game::current().sell_query(0, 0, {-1,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
+    Game::current().players[0].show();
+    Game::current().cities[0].show();
     Game::current().end_cycle();
-    Game::current().players[1].show();
-    for(int i=0;i<4;i++){
-        Game::current().cities[i].show();
-    }
+    std::cout << "----------------------------" << std::endl;
+
+    
+        
     Game::current().start_cycle();
+    Game::current().players[0].ban = 1;
+    std::cout << Game::current().sell_query(0, 0, {-1,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
     Game::current().end_cycle();
-    Game::current().buy_query(1,0,{0,0,1,0,0,0,0,0,0,0,0});
-    Game::current().players[1].show();
-    for(int i=0;i<4;i++){
-        Game::current().cities[i].show();
-    }
-    Game::current().dumpload("test3.txt");
+    std::cout << "----------------------------" << std::endl;
+
+    
+    Game::current().start_cycle();
+    std::cout << Game::current().sell_query(0, 0, {-1,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
+    Game::current().end_cycle();
+    std::cout << "----------------------------" << std::endl;
+
+    Game::current().start_cycle();
+    std::cout << Game::current().upgrade_building(0, {1,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
+    Game::current().players[0].show();
+    Game::current().end_cycle();
+    std::cout << "----------------------------" << std::endl;
+
+    
 }
 
 int main() {
-    test2();
+    test4();
 }
