@@ -1,71 +1,77 @@
 #include <iostream>
+#include "Game.h"
 
-#include <websocketpp/config/asio_no_tls.hpp>
-#include <websocketpp/server.hpp>
+void test1() {
+    Game::current().init();
+    int pid1 = Game::current().register_player().int_number;
+    int pid2 = Game::current().register_player().int_number;
+    Game::current().start_cycle();
+    Game::current().trade(0, {0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 1, {0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+    Game::current().end_cycle();
+    Game::current().dumpload("test1.txt");
+}
 
-#include <nlohmann/json.hpp>
+void test2() {
+    Game::current().init();
+    Game::current().load("test1.txt");
+    Game::current().dumpload("test2.txt");
+}
 
-// for convenience
-using json = nlohmann::json;
-
-typedef websocketpp::server<websocketpp::config::asio> server;
-
-server print_server;
-
-void on_message(websocketpp::connection_hdl conn, server::message_ptr msg) {
-    std::cout << "~~~~~ " << msg->get_payload() << std::endl;
-    auto j = json::parse(msg->get_payload());
-    if(j["type"] == "update-all"){
-        json response;
-        std::cout << "1\n";
-        response["resource_names"] = {"iron","gold","copper","lumber","grain","meat","wine"};
-        std::cout << "1\n";
-        response["teamlist"] = {
-            json::object({{"name","team1"},{"id",1},
-                         {"treaties",json::array({
-                             json::array({2}),
-                             json::array({})
-                        })}}),
-            json::object({{"name","team2"},{"id",2},
-                         {"treaties",json::array({
-                             json::array({1}),
-                             json::array({})
-                        })}})
-        };
-        std::cout << "1\n";
-        response["cities"] = json::array({
-            json::object({{"resources",json::array({
-                json::object({{"limit",500},{"price",100}}),
-                json::object({{"limit",50},{"price",10}}),
-                json::object({{"limit",500},{"price",100}}),
-                json::object({{"limit",50},{"price",10}}),
-                json::object({{"limit",500},{"price",100}}),
-                json::object({{"limit",50},{"price",10}}),
-                json::object({{"limit",50},{"price",10}})
-            })},{"name","varant"},{"id",0}}),
-            json::object({{"resources",json::array({
-                json::object({{"limit",5000},{"price",100}}),
-                json::object({{"limit",500},{"price",10}}),
-                json::object({{"limit",5000},{"price",100}}),
-                json::object({{"limit",500},{"price",100}}),
-                json::object({{"limit",5000},{"price",1000}}),
-                json::object({{"limit",50},{"price",10000}}),
-                json::object({{"limit",500},{"price",10}})
-            })},{"name","liberty"},{"id",1}})
-        });
-        print_server.send(conn,response.dump(),msg->get_opcode());
+void test3() {
+    Game::current().init();
+    int pid1 = Game::current().register_player().int_number;
+    int pid2 = Game::current().register_player().int_number;
+    Game::current().players[0].show();
+    Game::current().players[1].show();
+    Game::current().start_cycle();
+    Game::current().end_cycle();
+    Game::current().start_cycle();
+    Game::current().end_cycle();
+    Game::current().start_cycle();
+    Game::current().end_cycle();
+    Game::current().players[0].show();
+    Game::current().players[1].show();
+    Game::current().trade(0, {0,0,0,0},{13,0,0,0,0,0,0,0,0,0,0},1,{0,0,0,0},{1,0,0,0,0,0,0,0,0,0,0});
+    std::cout<<"Traded\n";
+    Game::current().players[0].show();
+    Game::current().players[1].show();
+    Game::current().add_treaty(0,1,0);
+    Game::current().add_treaty(0,1,1);
+    Game::current().players[0].show();
+    Game::current().players[1].show();
+    Game::current().remove_treaty(0,1,0);
+    Game::current().players[0].show();
+    Game::current().players[1].show();
+    Game::current().remove_treaty(0,1,0);
+    Game::current().remove_treaty(0,1,0);
+    Game::current().add_treaty(0,1,1);
+    Game::current().remove_treaty(0,1,0);
+    Game::current().players[0].show();
+    Game::current().players[1].show();
+    for(int i=0;i<4;i++){
+        Game::current().cities[i].show();
     }
+    Game::current().sell_query(1,0,{10,0,0,0,0,0,0,0,0,0,0});
+    Game::current().players[1].show();
+    for(int i=0;i<4;i++){
+        Game::current().cities[i].show();
+    }
+    Game::current().start_cycle();
+    Game::current().end_cycle();
+    Game::current().players[1].show();
+    for(int i=0;i<4;i++){
+        Game::current().cities[i].show();
+    }
+    Game::current().start_cycle();
+    Game::current().end_cycle();
+    Game::current().buy_query(1,0,{0,0,1,0,0,0,0,0,0,0,0});
+    Game::current().players[1].show();
+    for(int i=0;i<4;i++){
+        Game::current().cities[i].show();
+    }
+    Game::current().dumpload("test3.txt");
 }
 
 int main() {
-
-    print_server.set_message_handler(&on_message);
-    print_server.set_access_channels(websocketpp::log::alevel::all);
-    print_server.set_error_channels(websocketpp::log::elevel::all);
-
-    print_server.init_asio();
-    print_server.listen(9002);
-    print_server.start_accept();
-    std::cout << "prepared to run\n";
-    print_server.run();
+    test2();
 }
