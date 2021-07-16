@@ -8,12 +8,49 @@ int gid(int id)
 	return (-id - 1);
 }
 
+void War::show(){
+	std::cout<<step<<"\n";
+
+	std::cout<<"a_side_ids: ";
+	for(auto i:a_side_ids)
+		std::cout<<i<<" ";
+	std::cout<<std::endl;
+	std::cout<<"a_size: ";
+	for(auto i:a_size)
+		std::cout<<i<<" ";
+	std::cout<<std::endl;
+
+	std::cout<<"d_side_ids: ";
+	for(auto i:d_side_ids)
+		std::cout<<i<<" ";
+	std::cout<<std::endl;
+	std::cout<<"d_size: ";
+	for(auto i:d_size)
+		std::cout<<i<<" ";
+	std::cout<<std::endl;
+
+	std::cout<<"a_army: ";
+	for(auto i:a_army)
+		std::cout<<"("<<i.first<<","<<i.second<<") ";
+	std::cout<<std::endl;
+
+	std::cout<<"d_army: ";
+	for(auto i:d_army)
+		std::cout<<"("<<i.first<<","<<i.second<<") ";
+	std::cout<<std::endl;
+
+	std::cout<<attacker_id<<" "<<defender_id<<std::endl;
+	std::cout<<total_att<<" "<<total_def<<std::endl;
+}
+
 War::War(int _attacker_id, int _defender_id)
 {
 	attacker_id = _attacker_id;
-	defender_id = _attacker_id;
+	defender_id = _defender_id;
 	a_side_ids = {attacker_id};
 	d_side_ids = {defender_id};
+	step=0;
+	total_def = total_att = 0;
 }
 
 bool War::add_attacker(int id)
@@ -96,15 +133,30 @@ bool War::init_war()
 	{
 		std::vector<int> ith_army = Game::current().get_player_army(aid);
 		for (int tp = 0; tp < 3; tp++)
-			for (int i = 0; i < ith_army[tp]; i++)
+			for (int i = 0; i < ith_army[tp]; i++){
 				a_army.push_back(std::make_pair(tp,aid));
+				// total_att++;
+				}
 	}
 	for (auto did : d_side_ids)
 	{
 		std::vector<int> ith_army = Game::current().get_player_army(did);
 		for (int tp = 0; tp < 3; tp++)
-			for (int i = 0; i < ith_army[tp]; i++)
-								d_army.push_back(std::make_pair(tp,did));
+			for (int i = 0; i < ith_army[tp]; i++){
+				d_army.push_back(std::make_pair(tp,did));
+				// total_def++;			
+			}
+	}
+	if(total_att==0 && total_def==0){
+		step=5;
+	}
+	if(total_att==0 && total_def!=0){
+		step=5;
+		someone_won(0);
+	}
+	if(total_att!=0 && total_def==0){
+		step=5;
+		someone_won(1);
 	}
 }
 
@@ -113,9 +165,13 @@ bool War::progress_war()
 	step++;
 	if (step == 1)
 		init_war();
+	if(step==5){
+		step=4;
+		return 0;
+	}
 	std::srand(std::time(nullptr));
 	double survivors_pc = (step == 4 ? 0 : 1 - step * 0.3);
-	while (a_army.size() != 0 and d_army.size() != 0 and (a_army.size() / total_att >= survivors_pc) and (d_army.size() / total_def >= survivors_pc))
+	while (a_army.size() != 0 and d_army.size() != 0 and ((double)a_army.size() / total_att >= survivors_pc) and ((double)d_army.size() / total_def >= survivors_pc))
 	{
 		int a_troop_n = (std::rand()) % a_army.size();
 		int a_troop_type = a_army[a_troop_n].first;
@@ -168,6 +224,14 @@ bool War::progress_war()
 			a_army.erase(std::find(a_army.begin(),a_army.end(), std::make_pair(-1,-1)));
 			Game::current().kill_troop(a_troop_id,a_troop_type);
 		}
+	}
+	if(d_army.size()==0){
+		step=4;
+		someone_won(1);
+	}
+	else if(a_army.size()==0){
+		step=4;
+		someone_won(0);
 	}
 }
 

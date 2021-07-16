@@ -1,5 +1,6 @@
 #pragma once
 
+#include<iostream>
 #include<vector>
 #include<cstdlib>
 #include<ctime>
@@ -26,4 +27,6 @@ struct War {
 	bool progress_war();
 	bool init_war();
 	bool someone_won(int who);
+	// bool someone_conceded(int who);
+	void show();
 };
