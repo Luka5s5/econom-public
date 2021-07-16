@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body { 
+    height: 97%;
+    width: 99%;
+}    
+    
+.btn {
+  border: none; /* Remove borders */
+  color: white; /* Add a text color */
+  padding: 14px 28px; /* Add some padding */
+  cursor: pointer; /* Add a pointer cursor on mouse-over */
+  margin: 4px 2px;
+  border-radius: 5px;
+}
+
+.sell {background-color: #04AA6D;} /* Green */
+.sell:hover {background-color: #46a049;}
+
+.buy {background-color: #f44336;} /* Red */
+.buy:hover {background: #da190b;}
+
+.can {background-color: #04AA6D;} /* Green */
+.can:hover {background-color: #46a049;}
+
+.cant {background-color: #dddddd;} /* Red */
+.cant:hover {background: #dddddd;}
+
+</style>
+		
+</head>
+   
+<body>
+
+    <p>
+        Команда1: <select id="team" class="team-selector"></select>
+    </p>
+
+<div id="buildings_list"></div>
+<hr>
+<div id="army_list"></div>
+<button id="buy_army">Купить войска</button>
+<hr>
+
+<p id="strat">Стратегия : 
+<button class="team-dependent strategy btn can" data-strat=3 data-has="cant" data-hasnt="can">Универсальная</button>
+<button class="team-dependent strategy btn can" data-strat=0 data-has="cant" data-hasnt="can">Массированное наступление</button>
+<button class="team-dependent strategy btn can" data-strat=1 data-has="cant" data-hasnt="can">Глубокая оборона</button>
+<button class="team-dependent strategy btn can" data-strat=2 data-has="cant" data-hasnt="can">Тактические манёвры</button>
+</p>
+
+<script type = "text/javascript">
+
+document.getElementById("buy_army").onclick = function(){
+    const mydiv = document.getElementById("army_list");
+    let msg = {};
+    msg.type = "buy_army";
+    msg.army = [];
+    for(let el of mydiv.getElementsByTagName("p")){
+        let inp = el.getElementsByTagName("input")[0];
+        let idx = el.getElementsByClassName("army-numbers")[0].dataset.type;
+        let val = Number(inp.value);
+        msg.army[idx] = val;
+    }
+    msg.team = Number(document.getElementById("team").value);
+    ws.send(JSON.stringify(msg));
+}
+
+for(let el of document.getElementById("strat").getElementsByTagName("button")){
+    el.onclick = function (){
+        let msg = {};
+        msg.type = this.dataset.strat;
+        msg.team = Number(document.getElementById("team").value);
+        msg.team2 = Number(document.getElementById("team2").value);
+        msg.treatyType = Number(this.dataset.treatytype);
+        ws.send(JSON.stringify(msg));
+    }
+}
+
+document.getElementById("team").onchange = function (){
+    team_update(this.value);
+    ws.send(JSON.stringify({"type": "update-all"}));
+}
+
+function update(){
+    const mydiv = document.getElementById("buildings_list");
+    if(mydiv.getElementsByTagName("p") != null && mydiv.getElementsByTagName("p").length != 0)
+        return;
+    for(let i = 0; i < building_names.length; i++){
+        let container = document.createElement("p");
+        mydiv.appendChild(container);
+        let lname = document.createElement("label");
+        lname.innerHTML = building_names[i];
+        container.appendChild(lname);
+        let lvl = document.createElement("label");
+        lvl.classList.add("team-dependent");
+        lvl.classList.add("building-lvl");
+        lvl.dataset.type = i;
+        container.appendChild(lvl);
+        let btn = document.createElement("button");
+        btn.setAttribute("class","btn sell");
+        btn.innerHTML = "Улучшить";
+        container.appendChild(btn);
+        btn.onclick = function() {
+            let lab = this.parentElement.getElementsByClassName("building-lvl")[0];
+            let msg = {};
+            msg.team = Number(document.getElementById("team").value);
+            msg.type = "upgrade-building";
+            msg.building = lab.dataset.type;
+            ws.send(JSON.stringify(msg));
+        }
+    }
+    const mydiv = document.getElementById("army_list");
+    if(mydiv.getElementsByTagName("p") != null && mydiv.getElementsByTagName("p").length != 0)
+        return;
+    for(let i = 0; i < army_names.length; i++){
+        let container = document.createElement("p");
+        mydiv.appendChild(container);
+        let lname = document.createElement("label");
+        lname.innerHTML = army_names[i];
+        container.appendChild(lname);
+        let number = document.createElement("label");
+        number.classList.add("team-dependent");
+        number.classList.add("army-numbers");
+        number.dataset.type = i;
+        container.appendChild(number);
+        var amount = document.createElement("input");
+        amount.classList.add("amount-input");
+        container.appendChild(amount);
+    }
+}
+</script>
+
+<script type = "text/javascript" src="lib.js?version=1">
+</script>
+
+</body>
+</html> 
+ 

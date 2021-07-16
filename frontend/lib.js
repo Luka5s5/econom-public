@@ -2,10 +2,16 @@ var host = window.location.hostname;
 var ws = new WebSocket("ws://"+host+":9002");
 
 function city_update(x){
-    var ll = document.getElementsByClassName("city-dependent");
-    for(el of ll){
+    let ll = document.getElementsByClassName("city-dependent");
+    for(let el of ll){
         el.setAttribute("data-city", x);
-        console.log(el);
+    }
+}
+
+function team_update(x){
+    let ll = document.getElementsByClassName("team-dependent");
+    for(let el of ll){
+        el.setAttribute("data-team", x);
     }
 }
 
@@ -22,11 +28,16 @@ ws.onopen = function() {
 //city-selector
 //resource-price
 //city-dependent
+//team-dependent
 //treaty
-
+//strategy
+//building-lvl
+//army-numbers
 
 var resource_names = [];
 var city_names = [];
+var building_names = [];
+var army_names = [];
 
 ws.onmessage = function (evt) { 
     console.log("onmessage: " + evt.data);
@@ -36,8 +47,13 @@ ws.onmessage = function (evt) {
         return;
     }
     if(data["resource_names"] != null){
-        console.log(data["resource_names"]);
         resource_names = data["resource_names"];
+    }
+    if(data["building_names"] != null){
+        building_names = data["building_names"];
+    }
+    if(data["army_names"] != null){
+        army_names = data["army_names"];
     }
     if(data["cities"] != null){
         for(let city of data["cities"]){
@@ -61,16 +77,54 @@ ws.onmessage = function (evt) {
     }
     update();
     if(data["teamlist"] != null){
+        var l = document.getElementsByClassName("team-selector");
+        if(l.length != 0)
+            team_update(l[0].value);
+        var l = document.getElementsByClassName("strategy");
+        if(l != null){
+            for(var btn of l){
+                let id = btn.dataset.team;
+                let strattype = btn.dataset.strat;
+                if(id != null){
+                    if(data.teamlist[id].strategy == strattype){
+                        btn.classList.remove(btn.dataset.hasnt);
+                        btn.classList.add(btn.dataset.has);
+                    }else{
+                        btn.classList.remove(btn.dataset.has);
+                        btn.classList.add(btn.dataset.hasnt);
+                    }
+                }
+            }
+        }
+        var l = document.getElementsByClassName("building-lvl");
+        if(l != null){
+            for(let lab of l){
+                let id = lab.dataset.team;
+                let type = lab.dataset.type;
+                if(id != null){
+                    lab.dataset.lvl = data.teamlist[id].buildings[type];
+                    lab.innerHTML = data.teamlist[id].buildings[type];
+                }
+            }
+        }
+        var l = document.getElementsByClassName("army-numbers");
+        if(l != null){
+            for(let lab of l){
+                let id = lab.dataset.team;
+                let type = lab.dataset.type;
+                if(id != null){
+                    lab.innerHTML = data.teamlist[id].army[type];
+                }
+            }
+        }
         var l = document.getElementsByClassName("treaty");
         if(l != null){
             for(var btn of l){
-                console.log(btn);
                 let id1 = btn.dataset.team1;
                 let id2 = btn.dataset.team2;
                 let treatytype = btn.dataset.treatytype;
                 let check = false;
                 if(id1 != null && id2 != null){
-                    console.log(data.teamlist[id1].treaties[treatytype]);
                     for(let a of data.teamlist[id1].treaties[treatytype]){
                         if(a == id2){
                             check = true;
