@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body { 
+    height: 97%;
+    width: 99%;
+}    
+    
+.btn {
+  border: none; /* Remove borders */
+  color: white; /* Add a text color */
+  padding: 14px 28px; /* Add some padding */
+  cursor: pointer; /* Add a pointer cursor on mouse-over */
+  margin: 4px 2px;
+  border-radius: 5px;
+}
+
+.sell {background-color: #04AA6D;} /* Green */
+.sell:hover {background-color: #46a049;}
+
+.buy {background-color: #f44336;} /* Red */
+.buy:hover {background: #da190b;}
+
+.can {background-color: #04AA6D;} /* Green */
+.can:hover {background-color: #46a049;}
+
+.cant {background-color: #dddddd;} /* Red */
+.cant:hover {background: #dddddd;}
+
+</style>
+		
+</head>
+   
+<body>
+
+<table id="table"></table>
+
+<script type = "text/javascript">
+
+function update(){
+    const tab = document.getElementById("table");
+    if(tab.getElementsByTagName("tr") != null && tab.getElementsByTagName("tr").length != 0)
+        return;
+    let header = document.createElement("tr");
+    tab.appendChild(header);
+    let name = document.createElement("th");
+    name.innerHTML = "Название команды";
+    header.appendChild(name);
+    for(let iBuilding = 0; iBuilding < building_names.length; iBuilding++){
+        let name = document.createElement("th");
+        name.innerHTML = building_names[iBuilding];
+        header.appendChild(name);
+    }
+    for(let iArmy = 0; iArmy < army_names.length; iArmy++){
+        let name = document.createElement("th");
+        name.innerHTML = army_names[iArmy];
+        header.appendChild(name);
+    }
+    for(let iResource = 0; iResource < resource_names.length; iResource++){
+        let name = document.createElement("th");
+        name.innerHTML = resource_names[iResource];
+        header.appendChild(name);
+    }
+    for(let i = 0; i < team_names.length; i++){
+        let container = document.createElement("tr");
+        tab.appendChild(container);
+        let name = document.createElement("th");
+        name.innerHTML = team_names[i];
+        container.appendChild(name);
+        
+        for(let iBuilding = 0; iBuilding < building_names.length; iBuilding++){
+            let lvl = document.createElement("th");
+            lvl.dataset.team = i;
+            lvl.classList.add("building-lvl");
+            lvl.dataset.type = iBuilding;
+            container.appendChild(lvl);
+        }
+        for(let iArmy = 0; iArmy < army_names.length; iArmy++){
+            let num = document.createElement("th");
+            num.dataset.team = i;
+            num.classList.add("army-numbers");
+            num.dataset.type = iArmy;
+            container.appendChild(num);
+        }
+        for(let iResource = 0; iResource < resource_names.length; iResource++){
+            let name = document.createElement("th");
+            name.innerHTML = resource_names[iResource];
+            header.appendChild(name);
+        }
+        
+        let btn = document.createElement("button");
+        btn.setAttribute("class","btn sell");
+        btn.innerHTML = "Улучшить";
+        container.appendChild(btn);
+        btn.onclick = function() {
+            let lab = this.parentElement.getElementsByClassName("building-lvl")[0];
+            let msg = {};
+            msg.team = Number(document.getElementById("team").value);
+            msg.type = "upgrade-building";
+            msg.building = lab.dataset.type;
+            ws.send(JSON.stringify(msg));
+        }
+    }
+    const mydiv = document.getElementById("army_list");
+    if(mydiv.getElementsByTagName("p") != null && mydiv.getElementsByTagName("p").length != 0)
+        return;
+    for(let i = 0; i < army_names.length; i++){
+        let container = document.createElement("p");
+        mydiv.appendChild(container);
+        let lname = document.createElement("label");
+        lname.innerHTML = army_names[i];
+        container.appendChild(lname);
+        let number = document.createElement("label");
+        number.classList.add("team-dependent");
+        number.classList.add("army-numbers");
+        number.dataset.type = i;
+        container.appendChild(number);
+        var amount = document.createElement("input");
+        amount.classList.add("amount-input");
+        container.appendChild(amount);
+    }
+}
+</script>
+
+<script type = "text/javascript" src="lib.js?version=1">
+</script>
+
+</body>
+</html> 
+ 
