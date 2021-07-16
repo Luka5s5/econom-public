@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body { 
+    height: 97%;
+    width: 99%;
+}    
+    
+.btn {
+  border: none; /* Remove borders */
+  color: white; /* Add a text color */
+  padding: 14px 28px; /* Add some padding */
+  cursor: pointer; /* Add a pointer cursor on mouse-over */
+  margin: 4px 2px;
+  border-radius: 5px;
+}
+
+.sell {background-color: #04AA6D;} /* Green */
+.sell:hover {background-color: #46a049;}
+
+.buy {background-color: #f44336;} /* Red */
+.buy:hover {background: #da190b;}
+
+.can {background-color: #04AA6D;} /* Green */
+.can:hover {background-color: #46a049;}
+
+.cant {background-color: #dddddd;} /* Red */
+.cant:hover {background: #dddddd;}
+
+</style>
+		
+</head>
+   
+<body>
+
+    <p>
+        Команда1: <select id="team" class="team-selector"></select>
+    </p>
+<hr>
+
+<p>
+Название команды:
+<input></input>
+<button id="register" class="btn can">Зарегистрировать</button>
+</p>
+
+<button id="endcycle" class="btn can">Закончить цикл</button>
+<button id="newcycle" class="btn can">Новый цикл</button>
+
+<script type = "text/javascript">
+
+document.getElementById("register").onclick = function(){
+    let msg = {};
+    msg.type = "register";
+    msg.name = this.parentElement.getElementsByTagName("input")[0].value;
+    ws.send(JSON.stringify(msg));
+}
+
+document.getElementById("newcycle").onclick = function(){
+    let msg = {};
+    msg.type = "newcycle";
+    ws.send(JSON.stringify(msg));
+}
+
+document.getElementById("endcycle").onclick = function(){
+    let msg = {};
+    msg.type = "endcycle";
+    ws.send(JSON.stringify(msg));
+}
+
+function update(){
+}
+</script>
+
+<script type = "text/javascript" src="lib.js?version=1">
+</script>
+
+</body>
+</html> 
+ 

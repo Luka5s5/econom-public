@@ -159,7 +159,7 @@ public:
  
     Response register_player() {
         players.push_back(Player(players.size()));
-        return Response{true, std::to_string(players.size() - 1) + " - Номер нового игрока", (int)players.size()}; 
+        return Response{true, std::to_string(players.size() - 1) + " - Номер нового игрока", (int)players.size()-1}; 
     }
 
     Response trade(int player1_id,

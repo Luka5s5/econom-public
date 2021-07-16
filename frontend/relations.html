@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body { 
+    height: 97%;
+    width: 99%;
+}    
+    
+.btn {
+  border: none; /* Remove borders */
+  color: white; /* Add a text color */
+  padding: 14px 28px; /* Add some padding */
+  cursor: pointer; /* Add a pointer cursor on mouse-over */
+  margin: 4px 2px;
+  border-radius: 5px;
+}
+
+.sell {background-color: #04AA6D;} /* Green */
+.sell:hover {background-color: #46a049;}
+
+.buy {background-color: #f44336;} /* Red */
+.buy:hover {background: #da190b;}
+
+.can {background-color: #04AA6D;} /* Green */
+.can:hover {background-color: #46a049;}
+
+.cant {background-color: #dddddd;} /* Red */
+.cant:hover {background: #dddddd;}
+
+</style>
+		
+</head>
+   
+<body>
+
+    <p>
+        Команда1: <select id="team1" class="team-selector"></select>
+    </p>
+    <p>
+        Команда2: <select id="team2" class="team-selector"></select>
+    </p>
+
+<div id="resources_list"></div>
+<hr>
+<button id="submit">Совершить сделку</button>
+<hr>
+
+<p>Пакт о ненападении : 
+<button id="non-agression-sign" class="treaty btn can" data-change="sign" data-treatytype=0 data-has="cant" data-hasnt="can">Заключить</button>
+<button id="non-agression-force" class="treaty btn can" data-change="force" data-treatytype=0 data-has="can" data-hasnt="cant">Разорвать</button>
+<button id="non-agression-terminate" class="treaty btn can" data-change="terminate" data-treatytype=0 data-has="can" data-hasnt="cant">Отменить</button>
+</p>
+<p>Оборонительный союз : 
+<button id="defence-union-sign" class="treaty btn can" data-change="sign" data-treatytype=1 data-has="cant" data-hasnt="can">Заключить</button>
+<button id="defence-union-force" class="treaty btn can" data-change="force" data-treatytype=1 data-has="can" data-hasnt="cant">Разорвать</button>
+<button id="defence-union-terminate" class="treaty btn can" data-change="terminate" data-treatytype=1 data-has="can" data-hasnt="cant">Отменить</button>
+</p>
+<button id="war" class="btn buy">Война</button>
+
+<script type = "text/javascript">
+const buy = "Команда1 получает";
+const sell = "Команда1 отдаёт";
+
+document.getElementById("submit").onclick = function(){
+    const mydiv = document.getElementById("resources_list");
+    let msg = {};
+    msg.type = "exchange";
+    msg.resources = [];
+    msg.money = [];
+    for(let el of mydiv.getElementsByTagName("p")){
+        let inp = el.getElementsByTagName("input")[0];
+        let idx = inp.dataset.value;
+        let val = Number(inp.value);
+        val *= el.getElementsByTagName("button")[0].innerHTML == buy ? -1 : 1;
+        if(inp.dataset.type == "resource"){
+            msg.resources[idx] = val;
+        }
+        if(inp.dataset.type == "city"){
+            msg.money[idx] = val;
+        }
+    }
+    msg.team1 = Number(document.getElementById("team1").value);
+    msg.team2 = Number(document.getElementById("team2").value);
+    ws.send(JSON.stringify(msg));
+}
+
+let treatyButton = function (){
+    let msg = {};
+    msg.type = this.dataset.change;
+    msg.team1 = Number(document.getElementById("team1").value);
+    msg.team2 = Number(document.getElementById("team2").value);
+    msg.treatyType = Number(this.dataset.treatytype);
+    ws.send(JSON.stringify(msg));
+}
+
+function updateTeam1(x){
+    let l = document.getElementsByClassName("treaty");
+    for(let el of l){
+        el.dataset.team1 = x;
+    }
+}
+
+function updateTeam2(x){
+    let l = document.getElementsByClassName("treaty");
+    for(let el of l){
+        el.dataset.team2 = x;
+    }
+}
+
+document.getElementById("team1").onchange = function (){
+    updateTeam1(this.value);
+    ws.send(JSON.stringify({"type": "update-all"}));
+}
+
+document.getElementById("team2").onchange = function (){
+    updateTeam2(this.value);
+    ws.send(JSON.stringify({"type": "update-all"}));
+}
+
+document.getElementById("non-agression-sign").onclick = treatyButton;
+document.getElementById("non-agression-force").onclick = treatyButton;
+document.getElementById("non-agression-terminate").onclick = treatyButton;
+document.getElementById("defence-union-sign").onclick = treatyButton;
+document.getElementById("defence-union-force").onclick = treatyButton;
+document.getElementById("defence-union-terminate").onclick = treatyButton;
+
+document.getElementById("war").onclick = function(){
+    let msg = {};
+    msg.type = "war";
+    msg.team1 = Number(document.getElementById("team1").value);
+    msg.team2 = Number(document.getElementById("team2").value);
+    ws.send(JSON.stringify(msg));
+}
+
+function update(){
+    const mydiv = document.getElementById("resources_list");
+    if(mydiv.getElementsByTagName("p") != null && mydiv.getElementsByTagName("p").length != 0)
+        return;
+    for(var i = 0; i < resource_names.length; i++){
+        var container = document.createElement("p");
+        mydiv.appendChild(container);
+        var btn = document.createElement("button");
+        btn.setAttribute("class","btn sell");
+        btn.innerHTML = sell
+        container.appendChild(btn);
+        var lname = document.createElement("label");
+        lname.innerHTML = resource_names[i];
+        container.appendChild(lname);
+        var amount = document.createElement("input");
+        amount.classList.add("amount-input");
+        amount.dataset.type = "resource";
+        amount.dataset.value = i;
+        container.appendChild(amount);
+        btn.onclick = function() {
+            if(this.innerHTML == buy){
+                this.setAttribute("class","btn sell");
+                this.innerHTML = sell
+            }else{
+                this.setAttribute("class","btn buy");
+                this.innerHTML = buy
+            }
+        }
+    }
+    for(var i = 0; i < city_names.length; i++){
+        var container = document.createElement("p");
+        mydiv.appendChild(container);
+        var btn = document.createElement("button");
+        btn.setAttribute("class","btn sell");
+        btn.innerHTML = sell
+        container.appendChild(btn);
+        var lname = document.createElement("label");
+        lname.innerHTML = city_names[i];
+        container.appendChild(lname);
+        var amount = document.createElement("input");
+        amount.classList.add("amount-input");
+        amount.dataset.type = "city";
+        amount.dataset.value = i;
+        container.appendChild(amount);
+        btn.onclick = function() {
+            if(this.innerHTML == buy){
+                this.setAttribute("class","btn sell");
+                this.innerHTML = sell
+            }else{
+                this.setAttribute("class","btn buy");
+                this.innerHTML = buy
+            }
+        }
+    }
+    updateTeam1(document.getElementById("team1").value);
+    updateTeam2(document.getElementById("team2").value);
+}
+</script>
+
+<script type = "text/javascript" src="lib.js?version=1">
+</script>
+
+</body>
+</html> 
+ 

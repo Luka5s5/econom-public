@@ -5,7 +5,7 @@ CXX = g++
 # profilator -pg
 CFLAGS  = -std=gnu99 -O3 -fPIC 
 #-g -fsanitize=address -fsanitize=undefined -fstack-protector-strong -fsanitize=leak -fsanitize=pointer-subtract -fsanitize=pointer-compare
-CXFLAGS = -std=gnu++0x -O3 -msse3 -fPIC 
+CXFLAGS = -std=gnu++0x -O3 -msse3 -fPIC
 #-g -fsanitize=address -fsanitize=undefined -fstack-protector-strong -fsanitize=leak -fsanitize=pointer-subtract -fsanitize=pointer-compare
 
 INCL = -I./backend
@@ -19,8 +19,10 @@ LIBS = -lz -lm -pthread
 SRC = backend
 
 EXES = $(BUILD)/main
+EXES += $(BUILD)/server 
 
-OBJS =
+OBJS = $(BUILD)/Game.o
+OBJS += $(BUILD)/War.o
 
 all: $(OBJS) $(EXES)
 
