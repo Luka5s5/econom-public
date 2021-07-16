@@ -162,14 +162,34 @@ public:
         return Response{true, std::to_string(players.size() - 1) + " - Номер нового игрока", (int)players.size()-1}; 
     }
 
-    Response trade(int player1_id,
-                    std::vector<double> currencies1,
-                    std::vector<int> resources1,
-                    int player2_id,
-                    std::vector<double> currencies2,
-                    std::vector<int> resources2) {
-        Player& p1 = players[player1_id];
-        Player& p2 = players[player2_id];
+    Response trade(int sender_id,
+                    int reciever_id,
+                    std::vector<double> currencies,
+                    std::vector<int> resources) {
+        std::vector<double> currencies1 = currencies, currencies2 = currencies;
+        std::vector<int> resources1 = resources, resources2 = resources;
+        for (int i = 0; i < currencies.size(); i++) {
+            if (currencies1[i] < 0)
+                currencies1[i] = 0;
+        }
+        for (int i = 0; i < currencies.size(); i++) {
+            if (resources1[i] < 0)
+                resources1[i] = 0;
+        }
+        for (int i = 0; i < currencies.size(); i++) {
+            if (currencies2[i] > 0)
+                currencies2[i] = 0;
+            else 
+                currencies2[i] *= (-1);
+        }
+        for (int i = 0; i < currencies.size(); i++) {
+            if (resources2[i] > 0)
+                resources2[i] = 0;
+            else
+                resources2[i] *= (-1);
+        }
+        Player& p1 = players[sender_id];
+        Player& p2 = players[reciever_id];
         bool accepted = p1.check_available_currencies(currencies1) &&
                         p1.check_available_resources(resources1) &&
                         p2.check_available_currencies(currencies2) &&
@@ -185,8 +205,7 @@ public:
         p1.change_currencies(currencies2);
         p1.change_resources(resources2);
         p2.change_currencies(currencies1);
-        p2.change_resources(resources1);
-         
+        p2.change_resources(resources1); 
         return Response{true, "Успешно."};
     }
 

@@ -6,7 +6,7 @@ void test1() {
     // int pid1 = Game::current().register_player().int_number;
     // int pid2 = Game::current().register_player().int_number;
     Game::current().start_cycle();
-    Game::current().trade(0, {0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 1, {0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+    Game::current().trade(0, 1, {0, 0, 0, 0}, {1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0});
     Game::current().end_cycle();
     Game::current().dumpload("test1.txt");
 }
@@ -23,8 +23,8 @@ void test4() {
     Game::current().register_player();
     
     Game::current().start_cycle();
-    std::cout << Game::current().trade(0,{0,0,0,0},{1,0,0,0,0,0,0,0,0,0,0},1,{0,0,0,0},{0,1,0,0,0,0,0,0,0,0,0}).response << std::endl;
-    std::cout << Game::current().trade(0,{1,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},1,{0,1,0,0},{0,0,0,0,0,0,0,0,0,0,0}).response << std::endl; 
+    std::cout << Game::current().trade(0,1,{0,0,0,0},{1,-1,0,0,0,0,0,0,0,0,0}).response << std::endl;
+    std::cout << Game::current().trade(0, 1,{1,-1,0,0},{0,0,0,0,0,0,0,0,0,0,0}).response << std::endl; 
     Game::current().players[0].show();
     Game::current().players[1].show();
     Game::current().end_cycle();
@@ -120,5 +120,5 @@ void test_kill_npc(){
 }
 
 int main() {
-    test_kill_npc();
+    test4();
 }
