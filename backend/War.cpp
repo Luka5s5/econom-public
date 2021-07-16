@@ -29,15 +29,8 @@ void War::show(){
 		std::cout<<i<<" ";
 	std::cout<<std::endl;
 
-	std::cout<<"a_army: ";
-	for(auto i:a_army)
-		std::cout<<"("<<i.first<<","<<i.second<<") ";
-	std::cout<<std::endl;
-
-	std::cout<<"d_army: ";
-	for(auto i:d_army)
-		std::cout<<"("<<i.first<<","<<i.second<<") ";
-	std::cout<<std::endl;
+	std::cout<<"a_army: "<<a_army.size()<<std::endl;
+	std::cout<<"d_army: "<<d_army.size()<<std::endl;
 
 	std::cout<<attacker_id<<" "<<defender_id<<std::endl;
 	std::cout<<total_att<<" "<<total_def<<std::endl;
@@ -70,10 +63,15 @@ bool War::someone_won(int who){
 		for(auto did:d_side_ids){
 			double coeff=(did==defender_id?1:0.5);
 			for(int i=0;i<11;i++){
-				if(did<0) continue;
+				if(did<0){
+					resources[i]+=coeff*Game::current().cities[-did-1].items[i].countQ();
+				 	std::cout<<resources[i]<<" ! ";
+					continue;
+				}
 				resources[i]+=coeff*Game::current().players[did].resources[i];
 				Game::current().players[did].resources[i]-=(int)(coeff*Game::current().players[did].resources[i]);
 			}
+			std::cout<<"\n";
 		}
 		for(int i=0;i<a_side_ids.size();i++){
 			for(int j=0;j<11;j++){

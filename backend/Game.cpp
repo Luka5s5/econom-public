@@ -21,7 +21,7 @@ int Game::get_player_strat(int id){
 }
 
 void Game::kill_troop(int id, int troop_type){
-    std::cout << "kill troop " << id << " " << troop_type << std::endl;
+    // std::cout << "kill troop " << id << " " << troop_type << std::endl;
     if(id<0){
         cities[-id-1].army[troop_type]--;
     }
