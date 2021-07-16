@@ -55,10 +55,25 @@ json serializePlayer(Player& player){
     pl["treaties"] = player.treaties;
     pl["strategy"] = player.strategy;
     pl["army"] = player.army;
-    pl["resources"] = player.army;
+    pl["resources"] = player.resources;
     pl["buildings"] = player.building_levels;
     pl["money"] = player.currencies;
     return pl;
+}
+
+json serializeCity(City& city){
+    json ct;
+    ct["id"] = city.id;
+    ct["name"] = city_names[city.id];
+    ct["army"] = city.army;
+    ct["resources"] = json::array({});
+    for(int i = 0; i < city.items.size(); i++){
+        json aa;
+        aa["price"] = city.get_price(i);
+        aa["limit"] = city.get_limit_Q(i);
+        ct["resources"].push_back(aa);
+    }
+    return ct;
 }
 
 json getAllInfo(){
@@ -96,6 +111,11 @@ json getAllInfo(){
     
     for(auto pl : game.players){
         response["teamlist"].push_back(serializePlayer(pl));
+    }
+    
+    response["cities"] = json::array({});
+    for(auto city : game.cities){
+        response["cities"].push_back(serializeCity(city));
     }
     
     return response;
@@ -162,18 +182,7 @@ public:
             int id2 = j["team2"];
             std::vector<int> resources = j["resources"];
             std::vector<double> money = j["money"];
-            Response r = game.trade(id1,money,resources,id2,money,resources); //TODO
-            json response;
-            response["type"] = "response";
-            response["message"] = r.response;
-            m_server.send(conn,response.dump(),msg->get_opcode());
-            return r.result;
-        }else 
-        if(j["type"] == "sign"){
-            int id1 = j["team1"];
-            int id2 = j["team2"];
-            int type = j["treatytype"];
-            Response r = game.add_treaty(id1,id2,type);
+            Response r = game.trade(id1,id2,money,resources);
             json response;
             response["type"] = "response";
             response["message"] = r.response;
@@ -216,7 +225,7 @@ public:
             int id_team = j["team"];
             int id_city = j["city"];
             std::vector<int> resources = j["resources"];
-            Response r = game.sell_query(id_team,id_city,resources); //TODO
+            Response r = game.sell_query(id_team,id_city,resources);
             json response;
             response["type"] = "response";
             response["message"] = r.response;

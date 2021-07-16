@@ -38,30 +38,16 @@ html, body {
 </head>
    
 <body>
-<button id="add-energy" class="btn whiteobject">Send</button>
-<script type = "text/javascript">
-
-var host = window.location.hostname;
-var ws = new WebSocket("ws://"+host+":9002");
-                
-ws.onopen = function() {
-    console.log("onopen... ");
-};
-                
-ws.onmessage = function (evt) { 
-    console.log("onmessage: " + evt.data);
-};
-                
-ws.onclose = function() { 
-    alert("Connection is closed..."); 
-};
-
-document.getElementById("add-energy").onclick = function(){
-    var msg = {"command": "add-energy", "energy": 100};
-    ws.send(JSON.stringify(msg));
-};
-
-</script>
+<button class="btn success" onclick="location.href='/admin.html';">Admin</button>
+<br>
+<button class="btn success" onclick="location.href='/trade.html';">Trade</button>
+<br>
+<button class="btn success" onclick="location.href='/relations.html';">Relations</button>
+<br>
+<button class="btn success" onclick="location.href='/solo.html';">Solo</button>
+<br>
+<button class="btn success" onclick="location.href='/stat.html';">Stat</button>
+<br>
 
 </body>
 </html> 

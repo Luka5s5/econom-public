@@ -138,7 +138,7 @@ ws.onmessage = function (evt) {
                 let id = lab.dataset.team;
                 let type = lab.dataset.type;
                 if(id != null){
-                    lab.innerHTML = data.teamlist[id].money[type];
+                    lab.innerHTML = data.teamlist[id].money[type].toFixed(2);
                 }
             }
         }
@@ -197,8 +197,10 @@ ws.onmessage = function (evt) {
             for(var el of ll){
                 var city = el.getAttribute("data-city");
                 var resource = el.getAttribute("data-resource");
-                if(city != null && resource != null)
-                    el.innerHTML = data["cities"][city]["resources"][resource]["price"];
+                if(city != null && resource != null){
+                    console.log(data["cities"][city]["resources"][resource]["price"].toFixed(2));
+                    el.innerHTML = data["cities"][city]["resources"][resource]["price"].toFixed(2);
+                }
             }
         }
     }
