@@ -21,8 +21,16 @@ void on_message(websocketpp::connection_hdl conn, server::message_ptr msg) {
         response["resource_names"] = {"iron","gold","copper","lumber","grain","meat","wine"};
         std::cout << "1\n";
         response["teamlist"] = {
-            json::object({{"name","team1"},{"id",1}}),
-            json::object({{"name","team2"},{"id",2}})
+            json::object({{"name","team1"},{"id",1},
+                         {"treaties",json::array({
+                             json::array({2}),
+                             json::array({})
+                        })}}),
+            json::object({{"name","team2"},{"id",2},
+                         {"treaties",json::array({
+                             json::array({1}),
+                             json::array({})
+                        })}})
         };
         std::cout << "1\n";
         response["cities"] = json::array({

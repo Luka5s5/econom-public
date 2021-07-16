@@ -22,8 +22,11 @@ ws.onopen = function() {
 //city-selector
 //resource-price
 //city-dependent
+//treaty
+
 
 var resource_names = [];
+var city_names = [];
 
 ws.onmessage = function (evt) { 
     console.log("onmessage: " + evt.data);
@@ -36,7 +39,11 @@ ws.onmessage = function (evt) {
         console.log(data["resource_names"]);
         resource_names = data["resource_names"];
     }
-    update();
+    if(data["cities"] != null){
+        for(let city of data["cities"]){
+            city_names[Number(city["id"])] = city["name"];
+        }
+    }
     if(data["teamlist"] != null){
         var l = document.getElementsByClassName("team-selector");
         if(l != null){
@@ -46,8 +53,37 @@ ws.onmessage = function (evt) {
                 for(var team of data["teamlist"]){
                     var el = document.createElement("option");
                     el.textContent = team["name"];
-                    el.value = team["id"];
+                    el.value = Number(team["id"]);
                     selector.appendChild(el);
+                }
+            }
+        }
+    }
+    update();
+    if(data["teamlist"] != null){
+        var l = document.getElementsByClassName("treaty");
+        if(l != null){
+            for(var btn of l){
+                console.log(btn);
+                let id1 = btn.dataset.team1;
+                let id2 = btn.dataset.team2;
+                let treatytype = btn.dataset.treatytype;
+                let check = false;
+                if(id1 != null && id2 != null){
+                    console.log(data.teamlist[id1].treaties[treatytype]);
+                    for(let a of data.teamlist[id1].treaties[treatytype]){
+                        if(a == id2){
+                            check = true;
+                            break;
+                        }
+                    }
+                }
+                if(check){
+                    btn.classList.remove(btn.dataset.hasnt);
+                    btn.classList.add(btn.dataset.has);
+                }else{
+                    btn.classList.remove(btn.dataset.has);
+                    btn.classList.add(btn.dataset.hasnt);
                 }
             }
         }
@@ -61,20 +97,18 @@ ws.onmessage = function (evt) {
                 for(var city of data["cities"]){
                     var el = document.createElement("option");
                     el.textContent = city["name"];
-                    el.value = city["id"];
+                    el.value = Number(city["id"]);
                     selector.appendChild(el);
                 }
             }
-            city_update(l[0].value);
+            if(l.length != 0)
+                city_update(l[0].value);
         }
         var ll = document.getElementsByClassName("resource-limit");
         if(ll != null){
             for(var el of ll){
                 var city = el.getAttribute("data-city");
                 var resource = el.getAttribute("data-resource");
-                console.log(el);
-                console.log(city);
-                console.log(resource);
                 if(city != null && resource != null)
                     el.innerHTML = data["cities"][city]["resources"][resource]["limit"];
             }

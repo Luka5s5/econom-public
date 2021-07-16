@@ -66,7 +66,7 @@ document.getElementById("submit").onclick = function(){
     const mydiv = document.getElementById("resources_list");
     let msg = {};
     msg.type = "trade";
-    msg.city = document.getElementById("city").value;
+    msg.city = Number(document.getElementById("city").value);
     msg.resources = [];
     for(let el of mydiv.getElementsByTagName("p")){
         let idx = el.getElementsByClassName("resource-price")[0].dataset.resource;
@@ -74,7 +74,7 @@ document.getElementById("submit").onclick = function(){
         val *= el.getElementsByTagName("button")[0].innerHTML == buy ? -1 : 1;
         msg.resources[idx] = val;
     }
-    msg.team = document.getElementById("team").value;
+    msg.team = Number(document.getElementById("team").value);
     ws.send(JSON.stringify(msg));
 }
 
