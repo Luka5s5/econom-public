@@ -129,6 +129,11 @@ document.getElementById("defence-union-force").onclick = treatyButton;
 document.getElementById("defence-union-terminate").onclick = treatyButton;
 
 document.getElementById("war").onclick = function(){
+    let msg = {};
+    msg.type = "war";
+    msg.team1 = Number(document.getElementById("team1").value);
+    msg.team2 = Number(document.getElementById("team2").value);
+    ws.send(JSON.stringify(msg));
 }
 
 function update(){

@@ -123,6 +123,7 @@ struct Player {
     int ban;
     int strategy;
     std::vector<int> city_used;
+    std::string name;
 
     void mine_resources() {
         resources[0] += building_levels[0] * 4;
