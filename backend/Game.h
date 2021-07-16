@@ -388,6 +388,7 @@ public:
         else{
             wars.front().add_defender(id);
         }
+        return Response{1,"Все ок"};
     }
 
     Response proceed_top_war(){
@@ -396,6 +397,7 @@ public:
             wars.pop_front();
             return Response{1,"Война закончена все посчитатно"};
         }
+        std::cout<<"IDIDIT"<<std::endl;
         wars.front().progress_war();
         return {1,"Война продвинулась(вроде)"};
     }
