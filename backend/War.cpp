@@ -49,11 +49,13 @@ War::War(int _attacker_id, int _defender_id)
 bool War::add_attacker(int id)
 {
 	a_side_ids.push_back(id);
+	return true;
 }
 
 bool War::add_defender(int id)
 {
 	d_side_ids.push_back(id);
+	return true;
 }
 
 bool War::someone_won(int who){
@@ -97,6 +99,7 @@ bool War::someone_won(int who){
 			}
 		}
 	}
+	return true;
 }
 
 bool War::init_war()
@@ -156,6 +159,7 @@ bool War::init_war()
 		step=5;
 		someone_won(1);
 	}
+	return true;
 }
 
 bool War::progress_war()
@@ -165,7 +169,7 @@ bool War::progress_war()
 		init_war();
 	if(step==5){
 		step=4;
-		return 0;
+		return false;
 	}
 	std::srand(std::time(nullptr));
 	double survivors_pc = (step == 4 ? 0 : 1 - step * 0.3);
@@ -231,5 +235,6 @@ bool War::progress_war()
 		step=4;
 		someone_won(0);
 	}
+	return true;
 }
 

@@ -21,15 +21,15 @@ void test4() {
     Game::current().init();
     Game::current().register_player();
     Game::current().register_player();
-    
+
     Game::current().start_cycle();
     std::cout << Game::current().trade(0,1,{0,0,0,0},{1,-1,0,0,0,0,0,0,0,0,0}).response << std::endl;
-    std::cout << Game::current().trade(0, 1,{1,-1,0,0},{0,0,0,0,0,0,0,0,0,0,0}).response << std::endl; 
+    std::cout << Game::current().trade(0, 1,{1,-1,0,0},{0,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
     Game::current().players[0].show();
     Game::current().players[1].show();
     Game::current().end_cycle();
-    std::cout << "----------------------------" << std::endl; 
-    
+    std::cout << "----------------------------" << std::endl;
+
     Game::current().start_cycle();
     std::cout << Game::current().add_treaty(0, 1, 0).response << std::endl;
     std::cout << Game::current().add_treaty(0, 1, 0).response << std::endl;
@@ -41,12 +41,12 @@ void test4() {
     Game::current().end_cycle();
     std::cout << "----------------------------" << std::endl;
 
-    
+
     Game::current().start_cycle();
     Game::current().players[0].show();
     Game::current().cities[0].show();
     std::cout << Game::current().sell_query(0, 0, {10,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
-    std::cout << Game::current().sell_query(0, 0, {1000000,0,0,0,0,0,0,0,0,0,0}).response << std::endl; 
+    std::cout << Game::current().sell_query(0, 0, {1000000,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
     Game::current().players[0].show();
     Game::current().cities[0].show();
     Game::current().end_cycle();
@@ -63,15 +63,13 @@ void test4() {
     Game::current().end_cycle();
     std::cout << "----------------------------" << std::endl;
 
-    
-        
     Game::current().start_cycle();
     Game::current().players[0].ban = 1;
     std::cout << Game::current().sell_query(0, 0, {-1,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
     Game::current().end_cycle();
     std::cout << "----------------------------" << std::endl;
 
-    
+
     Game::current().start_cycle();
     std::cout << Game::current().sell_query(0, 0, {-1,0,0,0,0,0,0,0,0,0,0}).response << std::endl;
     Game::current().end_cycle();
@@ -83,7 +81,7 @@ void test4() {
     Game::current().end_cycle();
     std::cout << "----------------------------" << std::endl;
 
-    
+
 }
 
 void test_kill_npc(){
