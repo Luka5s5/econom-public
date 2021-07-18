@@ -58,6 +58,8 @@ json serializePlayer(Player& player){
     pl["resources"] = player.resources;
     pl["buildings"] = player.building_levels;
     pl["money"] = player.currencies;
+    auto resp = Game::current().get_victory_points(player.id);
+    pl["victory_points"] = resp.int_number;
     return pl;
 }
 
@@ -226,6 +228,31 @@ public:
             int id_city = j["city"];
             std::vector<int> resources = j["resources"];
             Response r = game.sell_query(id_team,id_city,resources);
+            json response;
+            response["type"] = "response";
+            response["message"] = r.response;
+            m_server.send(conn,response.dump(),msg->get_opcode());
+            return r.result;
+        }else
+        if(j["type"] == "proceed_top_war"){
+            Response r = game.proceed_top_war();
+            json response;
+            response["type"] = "response";
+            response["message"] = r.response;
+            m_server.send(conn,response.dump(),msg->get_opcode());
+            return r.result;
+        }else
+        if(j["type"] == "concede"){
+            int who = j["is_attack_won"];
+            Response r = game.concede_top_war(who);
+            json response;
+            response["type"] = "response";
+            response["message"] = r.response;
+            m_server.send(conn,response.dump(),msg->get_opcode());
+            return r.result;
+        }else
+        if(j["type"] == "peace"){
+            Response r = game.stop_top_war();
             json response;
             response["type"] = "response";
             response["message"] = r.response;
