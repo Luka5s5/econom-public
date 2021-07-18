@@ -151,6 +151,10 @@ Response Game::get_victory_points(int player_id) {
 }
 
 Response Game::start_cycle() {
+    if (is_cycle) {
+        return Response{false, "Цикл уже идёт."};
+    }
+    is_cycle = true;
     dumpload(std::to_string(current_round++) + ".txt");
     for (auto& city: cities) {
         city.update_plots();
@@ -162,6 +166,10 @@ Response Game::start_cycle() {
 }
 
 Response Game::end_cycle() {
+    if (!is_cycle) {
+        return Response{false, "Цикл собственно и не идёт"};
+    }
+    is_cycle = false;
     for (auto& player: players) {
         player.last_attack++;
         player.ban = 0;
@@ -370,6 +378,8 @@ Response Game::dumpload(std::string filename) {
 }
 
 Response Game::load(std::string filename) {
+    players.clear();
+
     std::ifstream file;
     file.open(filename);
     file >> current_round;
@@ -427,7 +437,6 @@ Response Game::proceed_top_war() {
         wars.pop_front();
         return Response{1,"Война закончена все посчитатно"};
     }
-    std::cout<<"IDIDIT"<<std::endl;
     wars.front().progress_war();
     return {1,"Война продвинулась(вроде)"};
 }

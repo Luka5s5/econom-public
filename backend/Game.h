@@ -51,7 +51,7 @@ public:
     std::vector<City> cities;
     std::deque<War> wars;
     int current_round = 1;
-
+    bool is_cycle = false;
 private:
     Game() = default; 
     static Game* game;

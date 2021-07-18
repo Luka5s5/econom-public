@@ -67,13 +67,13 @@ bool War::someone_won(int who){
 			for(int i=0;i<11;i++){
 				if(did<0){
 					resources[i]+=coeff*Game::current().cities[-did-1].items[i].countQ();
-				 	std::cout<<resources[i]<<" ! ";
+				 	// std::cout<<resources[i]<<" ! ";
 					continue;
 				}
 				resources[i]+=coeff*Game::current().players[did].resources[i];
 				Game::current().players[did].resources[i]-=(int)(coeff*Game::current().players[did].resources[i]);
 			}
-			std::cout<<"\n";
+			// std::cout<<"\n";
 		}
 		for(int i=0;i<a_side_ids.size();i++){
 			for(int j=0;j<11;j++){
