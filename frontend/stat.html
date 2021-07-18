@@ -78,6 +78,10 @@ function update(){
     name.classList.add("verticalTableHeader");
     name.innerHTML = "Название команды";
     header.appendChild(name);
+    let vp = document.createElement("th");
+    vp.classList.add("verticalTableHeader");
+    vp.innerHTML = "Очки победы";
+    header.appendChild(vp);
     for(let iBuilding = 0; iBuilding < building_names.length; iBuilding++){
         let name = document.createElement("th");
         name.classList.add("verticalTableHeader");
@@ -108,6 +112,11 @@ function update(){
         let name = document.createElement("td");
         name.innerHTML = team_names[i];
         container.appendChild(name);
+        
+        let vp = document.createElement("td");
+        vp.dataset.team = i;
+        vp.classList.add("victory-points");
+        container.appendChild(vp);
         
         for(let iBuilding = 0; iBuilding < building_names.length; iBuilding++){
             let lvl = document.createElement("td");

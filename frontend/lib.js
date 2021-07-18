@@ -34,6 +34,7 @@ ws.onopen = function() {
 //building-lvl
 //army-numbers
 //resource-numbers
+//victory-points
 
 var resource_names = [];
 var city_names = [];
@@ -163,6 +164,15 @@ ws.onmessage = function (evt) {
                 }else{
                     btn.classList.remove(btn.dataset.has);
                     btn.classList.add(btn.dataset.hasnt);
+                }
+            }
+        }
+        var l = document.getElementsByClassName("victory-points");
+        if(l != null){
+            for(let lab of l){
+                let id = lab.dataset.team;
+                if(id != null){
+                    lab.innerHTML = data.teamlist[id].victory_points;
                 }
             }
         }

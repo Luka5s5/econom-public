@@ -47,10 +47,16 @@ html, body {
 <input></input>
 <button id="register" class="btn can">Зарегистрировать</button>
 </p>
-
+<p>
 <button id="endcycle" class="btn can">Закончить цикл</button>
 <button id="newcycle" class="btn can">Новый цикл</button>
-
+</p>
+<p>
+<button id="proceed_top_war" class="btn can">Обработать войну</button>
+<button id="concede_atk" class="btn can">Атакующий сдаётся</button>
+<button id="concede_def" class="btn can">Защитник сдаётся</button>
+<button id="peace" class="btn can">Перемирие</button>
+</p>
 <script type = "text/javascript">
 
 document.getElementById("register").onclick = function(){
@@ -69,6 +75,32 @@ document.getElementById("newcycle").onclick = function(){
 document.getElementById("endcycle").onclick = function(){
     let msg = {};
     msg.type = "endcycle";
+    ws.send(JSON.stringify(msg));
+}
+
+document.getElementById("proceed_top_war").onclick = function(){
+    let msg = {};
+    msg.type = "proceed_top_war";
+    ws.send(JSON.stringify(msg));
+}
+
+document.getElementById("concede_atk").onclick = function(){
+    let msg = {};
+    msg.type = "concede";
+    msg.is_attack_won = 0;
+    ws.send(JSON.stringify(msg));
+}
+
+document.getElementById("concede_def").onclick = function(){
+    let msg = {};
+    msg.type = "concede";
+    msg.is_attack_won = 1;
+    ws.send(JSON.stringify(msg));
+}
+
+document.getElementById("peace").onclick = function(){
+    let msg = {};
+    msg.type = "peace";
     ws.send(JSON.stringify(msg));
 }
 
