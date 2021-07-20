@@ -233,7 +233,7 @@ bool War::progress_war()
 }
 // 1 оборонительный
 bool War::add_by_treaty(int id){
-	if(std::find(a_side_ids.begin(),a_side_ids.end(),id)==a_side_ids.end() or std::find(d_side_ids.begin(),d_side_ids.end(),id)==d_side_ids.end())
+	if(std::find(a_side_ids.begin(),a_side_ids.end(),id)!=a_side_ids.end() or std::find(d_side_ids.begin(),d_side_ids.end(),id)!=d_side_ids.end())
 		return 0;
 	if(Game::current().players[id].treaties[1].count(defender_id)){
 		d_side_ids.push_back(id);
@@ -256,6 +256,7 @@ bool War::add_indie_side(int id, int is_attacker){
 				Game::current().players[did].treaties[1].erase(id);
 			}
 		}
+		a_side_ids.push_back(id);
 	}
 	else{
 		for(auto aid:a_side_ids){
@@ -267,6 +268,7 @@ bool War::add_indie_side(int id, int is_attacker){
 				Game::current().players[aid].treaties[1].erase(id);
 			}
 		}
+		d_side_ids.push_back(id);
 	}
 	init_war();
 	return 1;
