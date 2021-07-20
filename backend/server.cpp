@@ -423,7 +423,9 @@ private:
     condition_variable m_action_cond;
 };
 
-int main() {
+int main(int argc, char *argv[]) {
+    if(argc > 1)
+        Game::current().load(argv[1]);
     Game::current().init();
     try {
         
