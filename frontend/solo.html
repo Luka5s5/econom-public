@@ -78,7 +78,7 @@ document.getElementById("buy_army").onclick = function(){
         msg.army[idx] = val;
     }
     msg.team = Number(document.getElementById("team").value);
-    ws.send(JSON.stringify(msg));
+    wsSend(msg);
 }
 
 for(let el of document.getElementById("strat").getElementsByTagName("button")){
@@ -87,7 +87,7 @@ for(let el of document.getElementById("strat").getElementsByTagName("button")){
         msg.type = "change_strat";
         msg.team = Number(document.getElementById("team").value);
         msg.strat = Number(this.dataset.strat);
-        ws.send(JSON.stringify(msg));
+        wsSend(msg);
     }
 }
 
@@ -124,7 +124,7 @@ function update(){
                 msg.team = Number(document.getElementById("team").value);
                 msg.type = "upgrade-building";
                 msg.building = lab.dataset.type;
-                ws.send(JSON.stringify(msg));
+                wsSend(msg);
             }
         }
     }
@@ -154,7 +154,7 @@ function update(){
 }
 </script>
 
-<script type = "text/javascript" src="lib.js?version=1">
+<script type = "text/javascript" src="lib.js?version=2">
 </script>
 
 </body>

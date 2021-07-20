@@ -86,7 +86,7 @@ document.getElementById("submit").onclick = function(){
         msg.resources[idx] = val;
     }
     msg.team = Number(document.getElementById("team").value);
-    ws.send(JSON.stringify(msg));
+    wsSend(msg);
 }
 
 document.getElementById("clear").onclick = function(){
@@ -154,7 +154,7 @@ function update(){
 }
 </script>
 
-<script type = "text/javascript" src="lib.js?version=1">
+<script type = "text/javascript" src="lib.js?version=2">
 </script>
 
 </body>

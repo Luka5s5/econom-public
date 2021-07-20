@@ -49,6 +49,18 @@ html, body {
 <button class="btn success" onclick="location.href='/stat.html';">Stat</button>
 <br>
 
+<script type = "text/javascript">
+
+function setCookie(cname, cvalue) {
+  const d = new Date();
+  d.setTime(d.getTime() + (60 * 60 * 1000));
+  let expires = "expires="+d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+setCookie("token","cdJc33MFUUkk0npgtc2c");
+</script>
+
 </body>
 </html> 
  

@@ -75,52 +75,52 @@ document.getElementById("register").onclick = function(){
     msg.type = "register";
     msg.name = this.parentElement.getElementsByTagName("input")[0].value;
     this.parentElement.getElementsByTagName("input")[0].value = "";
-    ws.send(JSON.stringify(msg));
+    wsSend(msg);
 }
 
 document.getElementById("newcycle").onclick = function(){
     let msg = {};
     msg.type = "newcycle";
-    ws.send(JSON.stringify(msg));
+    wsSend(msg);
 }
 
 document.getElementById("endcycle").onclick = function(){
     let msg = {};
     msg.type = "endcycle";
-    ws.send(JSON.stringify(msg));
+    wsSend(msg);
 }
 
 document.getElementById("proceed_top_war").onclick = function(){
     let msg = {};
     msg.type = "proceed_top_war";
-    ws.send(JSON.stringify(msg));
+    wsSend(msg);
 }
 
 document.getElementById("concede_atk").onclick = function(){
     let msg = {};
     msg.type = "concede";
     msg.is_attack_won = 0;
-    ws.send(JSON.stringify(msg));
+    wsSend(msg);
 }
 
 document.getElementById("concede_def").onclick = function(){
     let msg = {};
     msg.type = "concede";
     msg.is_attack_won = 1;
-    ws.send(JSON.stringify(msg));
+    wsSend(msg);
 }
 
 document.getElementById("peace").onclick = function(){
     let msg = {};
     msg.type = "peace";
-    ws.send(JSON.stringify(msg));
+    wsSend(msg);
 }
 
 function update(){
 }
 </script>
 
-<script type = "text/javascript" src="lib.js?version=1">
+<script type = "text/javascript" src="lib.js?version=2">
 </script>
 
 </body>

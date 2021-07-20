@@ -41,6 +41,8 @@ using websocketpp::lib::condition_variable;
  * on_message queue send to all channels
  */
 
+static const std::string token = "cdJc33MFUUkk0npgtc2c";
+
 static const char* city_names[] = {
     "Варант",
     "Либерти",
@@ -180,7 +182,22 @@ public:
             json response = getAllInfo();
             m_server.send(conn,response.dump(),msg->get_opcode());
             return false;
-        }else
+        }
+        if(!j.contains("token") || (j.contains("token") && j["token"] == "")) {
+            json response;
+            response["type"] = "response";
+            response["message"] = "No token, operation is forbidden";
+            m_server.send(conn,response.dump(),msg->get_opcode());
+            return false;
+        }
+        if(j.contains("token") && j["token"] != token){
+            std::cout << "invalid token " << j["token"] << std::endl;
+            json response;
+            response["type"] = "response";
+            response["message"] = "Invalid token, operation is forbidden";
+            m_server.send(conn,response.dump(),msg->get_opcode());
+            return false;
+        }
         if(j["type"] == "register"){
             Response r = game.register_player();
             std::cout << std::string(j["name"]) << std::endl;

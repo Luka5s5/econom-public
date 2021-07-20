@@ -1,6 +1,8 @@
 var host = window.location.hostname;
 var ws = new WebSocket("ws://"+host+":9002");
 
+console.log("lib loaded");
+
 function city_update(x){
     let ll = document.getElementsByClassName("city-dependent");
     for(let el of ll){
@@ -227,4 +229,25 @@ for(var selector of l){
         ws.send(JSON.stringify({"type": "update-all"}));
     }
 }
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function wsSend(msg){
+    msg.token = getCookie("token");
+    ws.send(JSON.stringify(msg));
+}
+
 
