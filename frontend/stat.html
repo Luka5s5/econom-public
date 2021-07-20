@@ -39,7 +39,7 @@ html, body {
 
 #table td, #table th {
   border: 1px solid #ddd;
-  padding: 8px;
+  text-align: right;
 }
 
 #table tr:nth-child(even){background-color: #f2f2f2;}
@@ -47,18 +47,43 @@ html, body {
 #table tr:hover {background-color: #ddd;}
 
 #table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
   text-align: right;
-  background-color: #04AA6D;
-  color: white;
+  color: black;
 }
 
 .verticalTableHeader {
-    //writing-mode: vertical-lr;
-    font-size: 9px;
+    text-align: left !important;
+    border: none !important;
+}
+
+#small {
     transform-origin: left bottom;
-    transform: rotate(-10deg) skew(50deg, -50deg);
+    transform: translate(100%) rotate(-10deg) skew(50deg, -50deg);
+    font-size: x-small;
+
+    max-width: 3em !important;
+    white-space: nowrap;
+}
+
+#sources {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+#sources td, #sources th {
+    border: 1px solid #ddd;
+    text-align: right;
+}
+
+
+#sources tr:nth-child(even){background-color: #f2f2f2;}
+
+#sources tr:hover {background-color: #ddd;}
+
+.verticalSourceHeader {
+    border: none !important;
 }
 
 </style>
@@ -66,90 +91,126 @@ html, body {
 </head>
    
 <body>
-<br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br>
 <table id="table"></table>
+<br><br>
+<table id="sources"></table>
 
 <script type = "text/javascript">
 
 function update(){
     const tab = document.getElementById("table");
-    if(tab.getElementsByTagName("tr") != null && tab.getElementsByTagName("tr").length != 0)
-        return;
-    let header = document.createElement("tr");
-    tab.appendChild(header);
-    let name = document.createElement("th");
-    name.classList.add("verticalTableHeader");
-    name.innerHTML = "Название команды";
-    header.appendChild(name);
-    let vp = document.createElement("th");
-    vp.classList.add("verticalTableHeader");
-    vp.innerHTML = "Очки победы";
-    header.appendChild(vp);
-    for(let iBuilding = 0; iBuilding < building_names.length; iBuilding++){
+    if(tab.getElementsByTagName("tr") == null || tab.getElementsByTagName("tr").length == 0){
+        let header = document.createElement("tr");
+        tab.appendChild(header);
         let name = document.createElement("th");
         name.classList.add("verticalTableHeader");
-        name.innerHTML = building_names[iBuilding];
+        name.innerHTML = "Название команды";
         header.appendChild(name);
-    }
-    for(let iArmy = 0; iArmy < army_names.length; iArmy++){
-        let name = document.createElement("th");
-        name.classList.add("verticalTableHeader");
-        name.innerHTML = army_names[iArmy];
-        header.appendChild(name);
-    }
-    for(let iResource = 0; iResource < resource_names.length; iResource++){
-        let name = document.createElement("th");
-        name.classList.add("verticalTableHeader");
-        name.innerHTML = resource_names[iResource];
-        header.appendChild(name);
-    }
-    for(let iMoney = 0; iMoney < city_names.length; iMoney++){
-        let name = document.createElement("th");
-        name.classList.add("verticalTableHeader");
-        name.innerHTML = city_names[iMoney];
-        header.appendChild(name);
-    }
-    for(let i = 0; i < team_names.length; i++){
-        let container = document.createElement("tr");
-        tab.appendChild(container);
-        let name = document.createElement("td");
-        name.innerHTML = team_names[i];
-        container.appendChild(name);
-        
-        let vp = document.createElement("td");
-        vp.dataset.team = i;
-        vp.classList.add("victory-points");
-        container.appendChild(vp);
-        
+        let vp = document.createElement("th");
+        vp.id = "small";
+        vp.classList.add("verticalTableHeader");
+        vp.innerHTML = "Очки победы";
+        header.appendChild(vp);
         for(let iBuilding = 0; iBuilding < building_names.length; iBuilding++){
-            let lvl = document.createElement("td");
-            lvl.dataset.team = i;
-            lvl.classList.add("building-lvl");
-            lvl.dataset.type = iBuilding;
-            container.appendChild(lvl);
+            let name = document.createElement("th");
+            name.id = "small";
+            name.classList.add("verticalTableHeader");
+            name.innerHTML = building_names[iBuilding];
+            header.appendChild(name);
         }
         for(let iArmy = 0; iArmy < army_names.length; iArmy++){
-            let num = document.createElement("td");
-            num.dataset.team = i;
-            num.classList.add("army-numbers");
-            num.dataset.type = iArmy;
-            container.appendChild(num);
+            let name = document.createElement("th");
+            name.id = "small";
+            name.classList.add("verticalTableHeader");
+            name.innerHTML = army_names[iArmy];
+            header.appendChild(name);
         }
         for(let iResource = 0; iResource < resource_names.length; iResource++){
-            let num = document.createElement("td");
-            num.dataset.team = i;
-            num.classList.add("resource-numbers");
-            num.dataset.type = iResource;
-            container.appendChild(num);
+            let name = document.createElement("th");
+            name.id = "small";
+            name.classList.add("verticalTableHeader");
+            name.innerHTML = resource_names[iResource];
+            header.appendChild(name);
         }
         for(let iMoney = 0; iMoney < city_names.length; iMoney++){
-            let num = document.createElement("td");
-            num.dataset.team = i;
-            num.classList.add("money-numbers");
-            num.dataset.type = iMoney;
-            container.appendChild(num);
+            let name = document.createElement("th");
+            name.classList.add("verticalTableHeader");
+            name.innerHTML = city_names[iMoney];
+            header.appendChild(name);
+        }
+        for(let i = 0; i < team_names.length; i++){
+            let container = document.createElement("tr");
+            tab.appendChild(container);
+            let name = document.createElement("td");
+            name.innerHTML = team_names[i];
+            container.appendChild(name);
+            
+            let vp = document.createElement("td");
+            vp.dataset.team = i;
+            vp.classList.add("victory-points");
+            container.appendChild(vp);
+            
+            for(let iBuilding = 0; iBuilding < building_names.length; iBuilding++){
+                let lvl = document.createElement("td");
+                lvl.dataset.team = i;
+                lvl.classList.add("building-lvl");
+                lvl.dataset.type = iBuilding;
+                container.appendChild(lvl);
+            }
+            for(let iArmy = 0; iArmy < army_names.length; iArmy++){
+                let num = document.createElement("td");
+                num.dataset.team = i;
+                num.classList.add("army-numbers");
+                num.dataset.type = iArmy;
+                container.appendChild(num);
+            }
+            for(let iResource = 0; iResource < resource_names.length; iResource++){
+                let num = document.createElement("td");
+                num.dataset.team = i;
+                num.classList.add("resource-numbers");
+                num.dataset.type = iResource;
+                container.appendChild(num);
+            }
+            for(let iMoney = 0; iMoney < city_names.length; iMoney++){
+                let num = document.createElement("td");
+                num.dataset.team = i;
+                num.classList.add("money-numbers");
+                num.dataset.type = iMoney;
+                container.appendChild(num);
+            }
         }
     }
+    const tabsrc = document.getElementById("sources");
+    if(tabsrc.getElementsByTagName("tr") == null || tabsrc.getElementsByTagName("tr").length == 0){
+        let header = document.createElement("tr");
+        tabsrc.appendChild(header);
+        let name = document.createElement("th");
+        name.classList.add("verticalSourceHeader");
+        name.innerHTML = "Страна";
+        header.appendChild(name);
+        for(let iResource = 0; iResource < resource_names.length; iResource++){
+            let name = document.createElement("th");
+            name.classList.add("verticalSourceHeader");
+            name.innerHTML = resource_names[iResource];
+            header.appendChild(name);
+        }
+        for(let i = 0; i < city_names.length; i++){
+            let container = document.createElement("tr");
+            tabsrc.appendChild(container);
+            let name = document.createElement("td");
+            name.innerHTML = city_names[i];
+            container.appendChild(name);
+            for(let iResource = 0; iResource < resource_names.length; iResource++){
+                let num = document.createElement("td");
+                num.dataset.city = i;
+                num.classList.add("resource-price");
+                num.dataset.resource = iResource;
+                container.appendChild(num);
+            }
+        }
+    }
+    
 }
 </script>
 

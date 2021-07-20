@@ -220,7 +220,6 @@ ws.onmessage = function (evt) {
                 var city = el.getAttribute("data-city");
                 var resource = el.getAttribute("data-resource");
                 if(city != null && resource != null){
-                    console.log(data["cities"][city]["resources"][resource]["price"].toFixed(2));
                     el.innerHTML = data["cities"][city]["resources"][resource]["price"].toFixed(2);
                 }
             }
