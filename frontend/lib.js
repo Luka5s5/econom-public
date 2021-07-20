@@ -37,6 +37,7 @@ ws.onopen = function() {
 //army-numbers
 //resource-numbers
 //victory-points
+//cycle-status
 
 //attacker
 //defender
@@ -224,85 +225,97 @@ ws.onmessage = function (evt) {
                 }
             }
         }
-        if(data.wars != null && data.wars.length > 0){
-            let war = data.wars[0];
-            let sum_atk = 0;
-            for(let a of war.attacker_army){
-                sum_atk += a;
-            }
-            let sum_def = 0;
-            for(let a of war.defender_army){
-                sum_def += a;
-            }
-            var ll = document.getElementsByClassName("attacker");
-            if(ll != null){
-                for(let el of ll){
-                    el.innerHTML = team_names[war.attacker];
+    }
+    if(data.is_cycle != null){
+        let l = document.getElementsByClassName("cycle-status");
+        if(l != null){
+            for(let btn of l){
+                if(data.is_cycle){
+                    btn.innerHTML = "Цикл идёт";
+                }else{
+                    btn.innerHTML = "Цикл закончен";
                 }
             }
-            var ll = document.getElementsByClassName("atk-list");
-            if(ll != null){
-                for(let el of ll){
-                    while (el.firstChild) {
-                        el.removeChild(el.lastChild);
-                    }
-                    for(let id of war.attackers_list){
-                        let li = document.createElement("li");
-                        li.innerHTML = team_names[id];
-                        el.appendChild(li);
-                    }
+        }
+    }
+    if(data.wars != null && data.wars.length > 0){
+        let war = data.wars[0];
+        let sum_atk = 0;
+        for(let a of war.attacker_army){
+            sum_atk += a;
+        }
+        let sum_def = 0;
+        for(let a of war.defender_army){
+            sum_def += a;
+        }
+        var ll = document.getElementsByClassName("attacker");
+        if(ll != null){
+            for(let el of ll){
+                el.innerHTML = team_names[war.attacker];
+            }
+        }
+        var ll = document.getElementsByClassName("atk-list");
+        if(ll != null){
+            for(let el of ll){
+                while (el.firstChild) {
+                    el.removeChild(el.lastChild);
+                }
+                for(let id of war.attackers_list){
+                    let li = document.createElement("li");
+                    li.innerHTML = team_names[id];
+                    el.appendChild(li);
                 }
             }
-            var ll = document.getElementsByClassName("atk-death");
-            if(ll != null){
-                for(let el of ll){
-                    el.style.width = (100*sum_atk/war.attackers_initial_army)+"%";
+        }
+        var ll = document.getElementsByClassName("atk-death");
+        if(ll != null){
+            for(let el of ll){
+                el.style.width = (100*sum_atk/war.attackers_initial_army)+"%";
+            }
+        }
+        var ll = document.getElementsByClassName("atk-army");
+        if(ll != null){
+            for(let el of ll){
+                let type = el.dataset.type;
+                el.style.width = (100*war.attacker_army[type]/sum_atk)+"%";
+            }
+        }
+        var ll = document.getElementsByClassName("defender");
+        if(ll != null){
+            for(let el of ll){
+                el.innerHTML = team_names[war.defender];
+            }
+        }
+        var ll = document.getElementsByClassName("def-list");
+        if(ll != null){
+            for(let el of ll){
+                while (el.firstChild) {
+                    el.removeChild(el.lastChild);
+                }
+                for(let id of war.defenders_list){
+                    let li = document.createElement("li");
+                    li.innerHTML = team_names[id];
+                    el.appendChild(li);
                 }
             }
-            var ll = document.getElementsByClassName("atk-army");
-            if(ll != null){
-                for(let el of ll){
-                    let type = el.dataset.type;
-                    el.style.width = (100*war.attacker_army[type]/sum_atk)+"%";
-                }
+        }
+        var ll = document.getElementsByClassName("def-death");
+        if(ll != null){
+            for(let el of ll){
+                el.style.width = (100*sum_def/war.defenders_initial_army)+"%";
             }
-            var ll = document.getElementsByClassName("defender");
-            if(ll != null){
-                for(let el of ll){
-                    el.innerHTML = team_names[war.defender];
-                }
+        }
+        var ll = document.getElementsByClassName("def-army");
+        if(ll != null){
+            for(let el of ll){
+                let type = el.dataset.type;
+                el.style.width = (100*war.defender_army[type]/sum_def)+"%";
             }
-            var ll = document.getElementsByClassName("def-list");
-            if(ll != null){
-                for(let el of ll){
-                    while (el.firstChild) {
-                        el.removeChild(el.lastChild);
-                    }
-                    for(let id of war.defenders_list){
-                        let li = document.createElement("li");
-                        li.innerHTML = team_names[id];
-                        el.appendChild(li);
-                    }
-                }
-            }
-            var ll = document.getElementsByClassName("def-death");
-            if(ll != null){
-                for(let el of ll){
-                    el.style.width = (100*sum_def/war.defenders_initial_army)+"%";
-                }
-            }
-            var ll = document.getElementsByClassName("def-army");
-            if(ll != null){
-                for(let el of ll){
-                    let type = el.dataset.type;
-                    el.style.width = (100*war.defender_army[type]/sum_def)+"%";
-                }
-            }
-            var ll = document.getElementsByClassName("army-balance");
-            if(ll != null){
-                for(let el of ll){
-                    el.style.width = (100*sum_atk/(sum_def+sum_atk))+"%";
-                }
+        }
+        var ll = document.getElementsByClassName("army-balance");
+        if(ll != null){
+            for(let el of ll){
+                el.style.width = (100*sum_atk/(sum_def+sum_atk))+"%";
             }
         }
     }

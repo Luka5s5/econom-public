@@ -134,7 +134,7 @@ json getAllInfo(){
         "Монастырь"
     };
     response["teamlist"] = json::array({});
-    
+    response["is_cycle"] = game.is_cycle;
     for(auto pl : game.players){
         response["teamlist"].push_back(serializePlayer(pl));
     }
