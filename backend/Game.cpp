@@ -465,6 +465,7 @@ Response Game::declare_war(int id_att, int id_def) {
     if(!flag)
         return Response{0,"Такая война уже объявлена"};
     wars.push_back(War(id_att,id_def));
+    wars.back().init_war();
     return Response{1,"Всё чикипуки"};
 }
 

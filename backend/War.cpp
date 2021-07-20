@@ -44,6 +44,7 @@ War::War(int _attacker_id, int _defender_id)
 	d_side_ids = {defender_id};
 	step=0;
 	total_def = total_att = 0;
+	init_war();
 }
 
 // bool War::add_attacker(int id)
@@ -104,6 +105,10 @@ bool War::someone_won(int who){
 
 bool War::init_war()
 {
+	total_att=0;
+	total_def=0;
+	a_size={};
+	d_size={};
 	for(auto aid:a_side_ids){
 		std::vector<int> temp=Game::current().get_player_army(aid);
 		a_size.push_back(std::accumulate(temp.begin(),temp.end(),0));
@@ -111,23 +116,11 @@ bool War::init_war()
 		if(aid<0) continue;
 		Game::current().players[aid].last_attack=1;
 	}
-	for(auto aid:a_side_ids){
-		for(auto did:d_side_ids){
-			if(aid<0 or did<0) continue;
-			if(Game::current().players[aid].treaties[0].count(did)!=0){ Game::current().players[aid].ban=1; Game::current().remove_treaty(aid,did,0);};
-		}
-	}
 	for(auto did:d_side_ids){
 		std::vector<int> temp=Game::current().get_player_army(did);
 		d_size.push_back(std::accumulate(temp.begin(),temp.end(),0));
 		total_def+=(d_size.back());
 		if(did<0) continue;
-		for(auto sec:Game::current().players[did].treaties[1]){
-			if(find(d_side_ids.begin(),d_side_ids.end(),sec)==d_side_ids.end()){
-				Game::current().players[sec].ban=1;
-				Game::current().remove_treaty(did,sec,1);
-			}
-		}
 	}
 
 	a_army = {}, d_army = {};
@@ -149,6 +142,11 @@ bool War::init_war()
 				// total_def++;			
 			}
 	}
+	return true;
+}
+
+bool War::progress_war()
+{
 	if(total_att==0 && total_def==0){
 		step=5;
 	}
@@ -160,11 +158,6 @@ bool War::init_war()
 		step=5;
 		someone_won(1);
 	}
-	return true;
-}
-
-bool War::progress_war()
-{
 	step++;
 	if (step == 1)
 		init_war();
@@ -244,6 +237,7 @@ bool War::add_by_treaty(int id){
 		return 0;
 	if(Game::current().players[id].treaties[1].count(defender_id)){
 		d_side_ids.push_back(id);
+		init_war();
 		return 1;
 	}
 	return 0;
@@ -274,6 +268,7 @@ bool War::add_indie_side(int id, int is_attacker){
 			}
 		}
 	}
+	init_war();
 	return 1;
 }
 
@@ -286,8 +281,8 @@ bool War::break_defence_treaties(){
 			Game::current().players[id].treaties[1].erase(defender_id);
 			Game::current().players[defender_id].treaties[0].erase(id);
 			Game::current().players[defender_id].treaties[1].erase(id);
-			
 		}
 	}
+	init_war();
 	return 1;
 }

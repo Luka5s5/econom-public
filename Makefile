@@ -14,7 +14,7 @@ LIBSTAT =
 
 BUILD = bin
 
-LIBS = -lz -lm -pthread
+LIBS = -lz -lm -pthread -DBOOST_ERROR_CODE_HEADER_ONLY
 
 SRC = backend
 

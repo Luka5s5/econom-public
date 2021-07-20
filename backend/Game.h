@@ -27,6 +27,7 @@ public:
     // War
     Response add_by_treaty(int id);
     Response add_indie_side(int id, int is_attacker);
+    Response break_defence_treaties();
 
     Response set_strategy(int player_id, int new_strategy);
     Response declare_war(int id_att, int id_def);
