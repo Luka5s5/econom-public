@@ -46,17 +46,17 @@ War::War(int _attacker_id, int _defender_id)
 	total_def = total_att = 0;
 }
 
-bool War::add_attacker(int id)
-{
-	a_side_ids.push_back(id);
-	return true;
-}
+// bool War::add_attacker(int id)
+// {
+// 	a_side_ids.push_back(id);
+// 	return true;
+// }
 
-bool War::add_defender(int id)
-{
-	d_side_ids.push_back(id);
-	return true;
-}
+// bool War::add_defender(int id)
+// {
+// 	d_side_ids.push_back(id);
+// 	return true;
+// }
 
 bool War::someone_won(int who){
 	//attacker
@@ -238,4 +238,56 @@ bool War::progress_war()
 	}
 	return true;
 }
+// 1 оборонительный
+bool War::add_by_treaty(int id){
+	if(std::find(a_side_ids.begin(),a_side_ids.end(),id)==a_side_ids.end() or std::find(d_side_ids.begin(),d_side_ids.end(),id)==d_side_ids.end())
+		return 0;
+	if(Game::current().players[id].treaties[1].count(defender_id)){
+		d_side_ids.push_back(id);
+		return 1;
+	}
+	return 0;
+}
 
+bool War::add_indie_side(int id, int is_attacker){
+	if(std::find(a_side_ids.begin(),a_side_ids.end(),id)==a_side_ids.end() or std::find(d_side_ids.begin(),d_side_ids.end(),id)==d_side_ids.end())
+		return 0;
+	if(is_attacker){
+		for(auto did:d_side_ids){
+			if(Game::current().players[id].treaties[0].count(did) || Game::current().players[id].treaties[1].count(did)){
+				Game::current().players[id].ban = 1;
+				Game::current().players[id].treaties[0].erase(did);
+				Game::current().players[id].treaties[1].erase(did);
+				Game::current().players[did].treaties[0].erase(id);
+				Game::current().players[did].treaties[1].erase(id);
+			}
+		}
+	}
+	else{
+		for(auto aid:a_side_ids){
+			if(Game::current().players[id].treaties[0].count(aid) || Game::current().players[id].treaties[1].count(aid)){
+				Game::current().players[id].ban = 1;
+				Game::current().players[id].treaties[0].erase(aid);
+				Game::current().players[id].treaties[1].erase(aid);
+				Game::current().players[aid].treaties[0].erase(id);
+				Game::current().players[aid].treaties[1].erase(id);
+			}
+		}
+	}
+	return 1;
+}
+
+
+bool War::break_defence_treaties(){
+	for(int id=0;id<Game::current().players.size();id++){
+		if(Game::current().players[id].treaties[1].count(defender_id)!=0 && std::find(d_side_ids.begin(),d_side_ids.end(),id)==d_side_ids.end()){
+			Game::current().players[id].ban = 1;
+			Game::current().players[id].treaties[0].erase(defender_id);
+			Game::current().players[id].treaties[1].erase(defender_id);
+			Game::current().players[defender_id].treaties[0].erase(id);
+			Game::current().players[defender_id].treaties[1].erase(id);
+			
+		}
+	}
+	return 1;
+}

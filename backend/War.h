@@ -10,10 +10,13 @@
 struct War {
 	War(int _attacker_id, int _defender_id);
     bool init_war();
-	bool add_attacker(int id);
-	bool add_defender(int id);
+	// bool add_attacker(int id);
+	// bool add_defender(int id);
 	bool progress_war();
 	bool someone_won(int who);
+    bool add_by_treaty(int id);
+    bool add_indie_side(int id, int is_attacker);
+    bool break_defence_treaties();
 	// bool someone_conceded(int who);
 
 	// Tech

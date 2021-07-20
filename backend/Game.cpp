@@ -462,26 +462,26 @@ Response Game::declare_war(int id_att, int id_def) {
     return Response{1,"Всё чикипуки"};
 }
 
-Response Game::add_top_war(int is_attack, int id) {
-    if (!is_cycle) {
-        return Response{false, "Цикл не идёт"};
-    }
-    bool flag=1;
-    for(auto i:wars.front().a_side_ids){
-        flag=(flag && i!=id);
-    }
-    for(auto i:wars.front().d_side_ids){
-        flag=(flag && i!=id);
-    }
-    if(!flag) return Response{0,"уже зареган в войну"};
-    if(is_attack==1){
-        wars.front().add_attacker(id);
-    }
-    else{
-        wars.front().add_defender(id);
-    }
-    return Response{1,"Все ок"};
-}
+// Response Game::add_top_war(int is_attack, int id) {
+//     if (!is_cycle) {
+//         return Response{false, "Цикл не идёт"};
+//     }
+//     bool flag=1;
+//     for(auto i:wars.front().a_side_ids){
+//         flag=(flag && i!=id);
+//     }
+//     for(auto i:wars.front().d_side_ids){
+//         flag=(flag && i!=id);
+//     }
+//     if(!flag) return Response{0,"уже зареган в войну"};
+//     if(is_attack==1){
+//         wars.front().add_attacker(id);
+//     }
+//     else{
+//         wars.front().add_defender(id);
+//     }
+//     return Response{1,"Все ок"};
+// }
 
 Response Game::proceed_top_war() {
     if (!is_cycle) {
@@ -514,4 +514,38 @@ Response Game::stop_top_war() {
     if(wars.size()==0) return Response{0,"Нет воин"};
     wars.pop_front();
     return Response{1,"Война закончилась миром"};
+}
+
+Response Game::add_by_treaty(int id){
+    if(wars.size()==0) return Response{0,"Нет воин"};
+    bool ans=wars.front().add_by_treaty(id);
+    if(ans){
+        return Response{1, "Добавился, все ок"};
+    }
+    else{
+        return Response{0, "Либо нет договора, либо уже добавлен"};
+    }
+}
+
+Response Game::add_indie_side(int id, int is_attacker){
+    if(wars.size()==0) return Response{0,"Нет воин"};
+    bool ans=wars.front().add_indie_side(id,is_attacker);
+    if(ans){
+        return Response{1, "Добавился"};
+    }
+    else{
+        return Response{0, "Кажется он уже добавлен"};
+    }
+}
+
+
+Response Game::break_defence_treaties(){
+    if(wars.size()==0) return Response{0,"Нет воин"};
+    bool ans=wars.front().break_defence_treaties();
+    if(ans){
+        return Response{1, "Урааааа!!!!"};
+    }
+    else{
+        return Response{0, "Чтото пошло не так"};
+    }
 }

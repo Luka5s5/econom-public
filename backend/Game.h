@@ -25,9 +25,12 @@ public:
     Response sell_query(int player_id, int city_id, std::vector<int> resource_array);
 
     // War
+    Response add_by_treaty(int id);
+    Response add_indie_side(int id, int is_attacker);
+
     Response set_strategy(int player_id, int new_strategy);
     Response declare_war(int id_att, int id_def);
-    Response add_top_war(int is_attack, int id);
+    // Response add_top_war(int is_attack, int id);
     Response proceed_top_war();
     Response concede_top_war(int attack_won);
     Response stop_top_war();
