@@ -358,6 +358,7 @@ public:
         m_server.set_error_channels(websocketpp::log::elevel::all);
         // Initialize Asio Transport
         m_server.init_asio();
+        m_server.set_reuse_addr(true);
 
         // Register handler callbacks
         m_server.set_open_handler(bind(&broadcast_server::on_open,this,::_1));
@@ -368,7 +369,6 @@ public:
     void run(uint16_t port) {
         // listen on specified port
         m_server.listen(port);
-
         // Start the server accept loop
         m_server.start_accept();
 
