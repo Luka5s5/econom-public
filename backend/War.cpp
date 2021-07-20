@@ -114,7 +114,7 @@ bool War::init_war()
 	for(auto aid:a_side_ids){
 		for(auto did:d_side_ids){
 			if(aid<0 or did<0) continue;
-			if(Game::current().players[aid].treaties[0].count(did)!=0) Game::current().players[aid].ban=1;
+			if(Game::current().players[aid].treaties[0].count(did)!=0){ Game::current().players[aid].ban=1; Game::current().remove_treaty(aid,did,0);};
 		}
 	}
 	for(auto did:d_side_ids){
@@ -125,6 +125,7 @@ bool War::init_war()
 		for(auto sec:Game::current().players[did].treaties[1]){
 			if(find(d_side_ids.begin(),d_side_ids.end(),sec)==d_side_ids.end()){
 				Game::current().players[sec].ban=1;
+				Game::current().remove_treaty(did,sec,1);
 			}
 		}
 	}
