@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+html, body { 
+    height: 97%;
+    width: 99%;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}    
+
+body {
+    background-color: rgb(226, 229, 245);
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: max-content;
+}
+
+.small-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.table {
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.table tr:nth-child(even){background-color: #f2f2f2;}
+.table tr:nth-child(odd){background-color: white;}
+.table td, .table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+.table tr:hover {background-color: #ddd;}
+
+ul {
+    margin-top: 0;
+
+}
+
+</style>
+</head>
+   
+
+<body>
+
+<select class="team-selector" id="teamSelect"></select>
+<h1 id="teamname">Teamname</h1>
+
+<!-- Главный блок (vertical direction) -->
+<div class="wrapper">
+    <!-- Маленький блок 1 (column direction) -->
+    <div class="small-wrapper">
+        <h3>Валюты</h3>
+        <table class="table" id="valuta"></table>
+    </div>
+
+    <!-- Маленький блок 2 (column direction) -->
+    <div class="small-wrapper">
+        <h3>Ресурсы</h3>
+        <table class="table" id="resurces">
+        </table>
+
+    </div>
+
+    <!-- Маленький блок 3 (column direction) -->
+    <div class="small-wrapper">
+        <h3>Строения</h3>
+        <table class="table" id="buildings">
+        </table>
+
+    </div>
+
+
+    <!-- Маленький блок 4 (column direction) -->
+    <div class="small-wrapper">
+        <h3>Армия</h3>
+        <table class="table" id="army">
+        </table>
+
+        <br>
+        <h3>Пакты о ненападении</h3>
+
+        <ul>
+        </ul>
+
+        <br>
+        <h3>Оборонительные союзы</h3>
+
+        <ul>
+        </ul>
+
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type = "text/javascript">
+
+document.getElementById("teamSelect").onchange = function (){
+    team_update(this.value);
+    ws.send(JSON.stringify({"type": "update-all"}));
+}
+
+function update(){
+    let team = document.getElementById("teamSelect").value;
+
+    const valuteTab = document.getElementById("valuta");
+    const resTab = document.getElementById("resurces");
+    const buildingsTab = document.getElementById("buildings");
+    const armyTab = document.getElementById("army");
+    if(valuteTab.getElementsByTagName("tr") != null && valuteTab.getElementsByTagName("tr").length != 0)
+        return;
+    
+    
+    for(let iMoney = 0; iMoney < city_names.length; iMoney++){
+        let tr = document.createElement("tr");
+        let name = document.createElement("td");
+        name.classList.add("verticalTableHeader");
+        name.innerHTML = city_names[iMoney];
+
+        let value = document.createElement("td");
+        value.dataset.team = team;
+        value.classList.add("money-numbers");
+        value.classList.add("team-dependent");
+        value.dataset.type = iMoney;
+
+        tr.appendChild(name);
+        tr.appendChild(value);
+        valuteTab.appendChild(tr);
+    }
+
+    for(let iResource = 0; iResource < resource_names.length; iResource++){
+        let tr = document.createElement("tr");
+        let name = document.createElement("td");
+        name.classList.add("verticalTableHeader");
+        name.innerHTML = resource_names[iResource];
+
+        let num = document.createElement("td");
+        num.dataset.team = team;
+        num.classList.add("resource-numbers");
+        num.classList.add("team-dependent");
+        num.dataset.type = iResource;
+
+        tr.appendChild(name);
+        tr.appendChild(num);
+        resTab.appendChild(tr);
+        
+    }
+
+    for(let iBuilding = 0; iBuilding < building_names.length; iBuilding++){
+        let tr = document.createElement("tr");
+        let name = document.createElement("th");
+        name.classList.add("verticalTableHeader");
+        name.innerHTML = building_names[iBuilding];
+        
+        let lvl = document.createElement("td");
+        lvl.dataset.team = team;
+        lvl.classList.add("building-lvl");
+        lvl.classList.add("team-dependent");
+        lvl.dataset.type = iBuilding;
+
+        tr.appendChild(name);
+        tr.appendChild(lvl);
+        buildingsTab.appendChild(tr);
+        
+    }
+    for(let iArmy = 0; iArmy < army_names.length; iArmy++){
+        let tr = document.createElement("tr");
+        let name = document.createElement("th");
+        name.classList.add("verticalTableHeader");
+        name.innerHTML = army_names[iArmy];
+
+        let num = document.createElement("td");
+        num.dataset.team = team;
+        num.classList.add("army-numbers");
+        num.classList.add("team-dependent");
+        num.dataset.type = iArmy;
+
+        tr.appendChild(name);
+        tr.appendChild(num);
+        armyTab.appendChild(tr);
+    }
+}
+</script>
+
+<script type = "text/javascript" src="lib.js?version=2">
+</script>
+
+</body>
+</html> 
+ 

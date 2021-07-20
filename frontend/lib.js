@@ -206,6 +206,16 @@ ws.onmessage = function (evt) {
             if(l.length != 0)
                 city_update(l[0].value);
         }
+        var l = document.getElementsByClassName("army-numbers-city");
+        if(l != null){
+            for(let lab of l){
+                let id = lab.dataset.city;
+                let type = lab.dataset.type;
+                if(id != null){
+                    lab.innerHTML = data.cities[id].army[type];
+                }
+            }
+        }
         var ll = document.getElementsByClassName("resource-limit");
         if(ll != null){
             for(var el of ll){
@@ -251,7 +261,11 @@ ws.onmessage = function (evt) {
         var ll = document.getElementsByClassName("attacker");
         if(ll != null){
             for(let el of ll){
-                el.innerHTML = team_names[war.attacker];
+                if(war.attacker >= 0){
+                    el.innerHTML = team_names[war.attacker];
+                }else{
+                    el.innerHTML = city_names[-1-war.attacker];
+                }
             }
         }
         var ll = document.getElementsByClassName("atk-list");
@@ -262,7 +276,11 @@ ws.onmessage = function (evt) {
                 }
                 for(let id of war.attackers_list){
                     let li = document.createElement("li");
-                    li.innerHTML = team_names[id];
+                    if(id >= 0){
+                        li.innerHTML = team_names[id];
+                    }else{
+                        li.innerHTML = city_names[-1-id];
+                    }
                     el.appendChild(li);
                 }
             }
@@ -283,7 +301,11 @@ ws.onmessage = function (evt) {
         var ll = document.getElementsByClassName("defender");
         if(ll != null){
             for(let el of ll){
-                el.innerHTML = team_names[war.defender];
+                if(war.defender >= 0){
+                    el.innerHTML = team_names[war.defender];
+                }else{
+                    el.innerHTML = city_names[-1-war.defender];
+                }
             }
         }
         var ll = document.getElementsByClassName("def-list");
@@ -294,7 +316,11 @@ ws.onmessage = function (evt) {
                 }
                 for(let id of war.defenders_list){
                     let li = document.createElement("li");
-                    li.innerHTML = team_names[id];
+                    if(id >= 0){
+                        li.innerHTML = team_names[id];
+                    }else{
+                        li.innerHTML = city_names[-1-id];
+                    }
                     el.appendChild(li);
                 }
             }
