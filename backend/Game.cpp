@@ -216,7 +216,7 @@ Response Game::register_player(std::string name) {
     }
     players.push_back(Player(players.size()));
     players.back().name = name; 
-    return Response{true, std::to_string(players.size() - 1) + " - Номер нового игрока", (int)players.size()-1};
+    return Response{true, std::to_string(players.size() - 1) + " - номер нового игрока", (int)players.size()-1};
 }
 
 Response Game::trade(int sender_id,
@@ -475,7 +475,7 @@ Response Game::declare_war(int id_att, int id_def) {
         return Response{0,"Такая война уже объявлена"};
     wars.push_back(War(id_att,id_def));
     wars.back().init_war();
-    return Response{1,"Всё чикипуки"};
+    return Response{1,"Война объявлена!"};
 }
 
 // Response Game::add_top_war(int is_attack, int id) {
@@ -533,6 +533,9 @@ Response Game::stop_top_war() {
 }
 
 Response Game::add_by_treaty(int id){
+    if (is_cycle) {
+        return Response{false, "Закончите цикл"};
+    }
     if(wars.size()==0) return Response{0,"Нет воин"};
     bool ans=wars.front().add_by_treaty(id);
     if(ans){
@@ -544,6 +547,9 @@ Response Game::add_by_treaty(int id){
 }
 
 Response Game::add_indie_side(int id, int is_attacker){
+    if (is_cycle) {
+        return Response{false, "Закончите цикл"};
+    }
     if(wars.size()==0) return Response{0,"Нет воин"};
     bool ans=wars.front().add_indie_side(id,is_attacker);
     if(ans){
@@ -556,12 +562,15 @@ Response Game::add_indie_side(int id, int is_attacker){
 
 
 Response Game::break_defence_treaties(){
+    if (is_cycle) {
+        return Response{false, "Закончите цикл"};
+    }
     if(wars.size()==0) return Response{0,"Нет воин"};
     bool ans=wars.front().break_defence_treaties();
     if(ans){
-        return Response{1, "Урааааа!!!!"};
+        return Response{1, "Другие оборонительные союзы с Defender разрушены."};
     }
     else{
-        return Response{0, "Чтото пошло не так"};
+        return Response{0, "Что-то пошло не так"};
     }
 }
