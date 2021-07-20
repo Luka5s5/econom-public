@@ -19,6 +19,17 @@ html, body {
   border-radius: 5px;
 }
 
+.label {
+  display: inline-block;
+  padding: 12px; /* Some padding */ 
+  border: 1px solid; /* Gray border */
+  border-color: #04AA6D;
+  border-radius: 5px; /* Rounded borders */
+  box-sizing: border-box; /* Make sure that padding and width stays in place */
+  margin-top: 4px; /* Add a top margin */
+  margin-bottom: 2px; /* Bottom margin */
+}
+
 .sell {background-color: #04AA6D;} /* Green */
 .sell:hover {background-color: #46a049;}
 
@@ -37,21 +48,21 @@ html, body {
    
 <body>
 
-    <p>
-        Команда1: <select id="team" class="team-selector"></select>
+    <p class="label">
+        Команда1: <select id="team" class="team-selector label"></select>
     </p>
 <hr>
 
-<p>
-Название команды:
-<input></input>
+<p class="label">
+<label>Название команды:</label>
+<input class="label"></input>
 <button id="register" class="btn can">Зарегистрировать</button>
-</p>
-<p>
+</p> <br>
+<p class="label">
 <button id="endcycle" class="btn can">Закончить цикл</button>
 <button id="newcycle" class="btn can">Новый цикл</button>
-</p>
-<p>
+</p> <br>
+<p class="label">
 <button id="proceed_top_war" class="btn can">Обработать войну</button>
 <button id="concede_atk" class="btn can">Атакующий сдаётся</button>
 <button id="concede_def" class="btn can">Защитник сдаётся</button>
@@ -63,6 +74,7 @@ document.getElementById("register").onclick = function(){
     let msg = {};
     msg.type = "register";
     msg.name = this.parentElement.getElementsByTagName("input")[0].value;
+    this.parentElement.getElementsByTagName("input")[0].value = "";
     ws.send(JSON.stringify(msg));
 }
 

@@ -78,6 +78,24 @@ json serializeCity(City& city){
     return ct;
 }
 
+json serializeWar(War& war){
+    json w;
+    w["attacker"] = war.attacker_id;
+    w["defender"] = war.defender_id;
+    w["step"] = war.step;
+    std::vector<int> a_army(3);
+    for(auto a : war.a_army){
+        a_army[a.first]++;
+    }
+    w["attacker_army"] = a_army;
+    std::vector<int> d_army(3);
+    for(auto a : war.d_army){
+        d_army[a.first]++;
+    }
+    w["defender_army"] = d_army;
+    return w;
+}
+
 json getAllInfo(){
     Game& game = Game::current();
     json response;
@@ -118,6 +136,16 @@ json getAllInfo(){
     response["cities"] = json::array({});
     for(auto city : game.cities){
         response["cities"].push_back(serializeCity(city));
+    }
+    
+    response["cities"] = json::array({});
+    for(auto city : game.cities){
+        response["cities"].push_back(serializeCity(city));
+    }
+    
+    response["wars"] = json::array({});
+    for(auto war : game.wars){
+        response["wars"].push_back(serializeWar(war));
     }
     
     return response;
@@ -253,6 +281,14 @@ public:
         }else
         if(j["type"] == "peace"){
             Response r = game.stop_top_war();
+            json response;
+            response["type"] = "response";
+            response["message"] = r.response;
+            m_server.send(conn,response.dump(),msg->get_opcode());
+            return r.result;
+        }else
+        if(j["type"] == "change_strat"){
+            Response r = game.set_strategy(j["team"],j["strat"]);
             json response;
             response["type"] = "response";
             response["message"] = r.response;

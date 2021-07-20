@@ -19,6 +19,16 @@ html, body {
   border-radius: 5px;
 }
 
+.label {
+  display: inline-block;
+  padding: 12px; /* Some padding */ 
+  border: 1px solid; /* Gray border */
+  border-color: #04AA6D;
+  border-radius: 5px; /* Rounded borders */
+  box-sizing: border-box; /* Make sure that padding and width stays in place */
+  margin: 4px 2px;
+}
+
 .sell {background-color: #04AA6D;} /* Green */
 .sell:hover {background-color: #46a049;}
 
@@ -30,16 +40,17 @@ html, body {
    
 <body>
 
-<div>
-Город: <select name="city" id="city" class="city-selector"></select>
-</div>
-<div>
-Команда: <select name="team" id="team" class="team-selector"></select>
-</div>
-<div id="resources_list"></div>
+<div class="label">
+Город: <select name="city" id="city" class="city-selector label"></select>
+</div> <br>
+<div class="label">
+Команда: <select name="team" id="team" class="team-selector label"></select>
+</div> <br>
+<div id="resources_list" class="label"></div>
 <hr>
-<label id="total">Игрок получит 0</label>
-<button id="submit">Совершить сделку</button>
+<label id="total" class="label">Игрок получит 0</label><br>
+<button id="submit"  class="btn sell">Совершить сделку</button>
+<button id="clear" class="btn can">Очистить поля</button>
 
 <script type = "text/javascript">
 const buy = "Игрок покупает ";
@@ -78,6 +89,13 @@ document.getElementById("submit").onclick = function(){
     ws.send(JSON.stringify(msg));
 }
 
+document.getElementById("clear").onclick = function(){
+    const mydiv = document.getElementById("resources_list");
+    for(let el of mydiv.getElementsByTagName("input")){
+        el.value = "";
+    }
+}
+
 function update(){
     const mydiv = document.getElementById("resources_list");
     if(mydiv.getElementsByTagName("p") != null && mydiv.getElementsByTagName("p").length != 0)
@@ -86,9 +104,11 @@ function update(){
         var container = document.createElement("p");
         mydiv.appendChild(container);
         var lname = document.createElement("label");
+        lname.classList.add("label");
         lname.innerHTML = resource_names[i];
         container.appendChild(lname);
         var price = document.createElement("label");
+        price.classList.add("label");
         price.classList.add("resource-price");
         price.classList.add("city-dependent");
         price.setAttribute("data-resource", i);
@@ -98,6 +118,7 @@ function update(){
         btn.innerHTML = sell
         container.appendChild(btn);
         var amount = document.createElement("input");
+        amount.classList.add("label");
         amount.classList.add("amount-input");
         container.appendChild(amount);
         var delim = document.createElement("label");
