@@ -256,14 +256,14 @@ ws.onmessage = function (evt) {
             var ll = document.getElementsByClassName("atk-death");
             if(ll != null){
                 for(let el of ll){
-                    el.style.width = 100*sum_atk/war.attackers_initial_army;
+                    el.style.width = (100*sum_atk/war.attackers_initial_army)+"%";
                 }
             }
             var ll = document.getElementsByClassName("atk-army");
             if(ll != null){
                 for(let el of ll){
                     let type = el.dataset.type;
-                    el.style.width = 100*war.attacker_army[type]/sum_atk;
+                    el.style.width = (100*war.attacker_army[type]/sum_atk)+"%";
                 }
             }
             var ll = document.getElementsByClassName("defender");
@@ -288,14 +288,20 @@ ws.onmessage = function (evt) {
             var ll = document.getElementsByClassName("def-death");
             if(ll != null){
                 for(let el of ll){
-                    el.style.width = 100*sum_def/war.defenders_initial_army;
+                    el.style.width = (100*sum_def/war.defenders_initial_army)+"%";
                 }
             }
             var ll = document.getElementsByClassName("def-army");
             if(ll != null){
                 for(let el of ll){
                     let type = el.dataset.type;
-                    el.style.width = 100*war.defender_army[type]/sum_def;
+                    el.style.width = (100*war.defender_army[type]/sum_def)+"%";
+                }
+            }
+            var ll = document.getElementsByClassName("army-balance");
+            if(ll != null){
+                for(let el of ll){
+                    el.style.width = (100*sum_atk/(sum_def+sum_atk))+"%";
                 }
             }
         }
