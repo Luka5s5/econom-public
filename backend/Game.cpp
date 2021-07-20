@@ -169,6 +169,9 @@ Response Game::start_cycle() {
     if (is_cycle) {
         return Response{false, "Цикл уже идёт."};
     }
+    if (wars.size() != 0) {
+        return Response{false, "Сперва закончите войны"};
+    }
     is_cycle = true;
     dumpload(std::to_string(current_round) + ".txt");
     for (auto& city: cities) {
@@ -454,6 +457,9 @@ Response Game::declare_war(int id_att, int id_def) {
     if (!is_cycle) {
         return Response{false, "Цикл не идёт"};
     }
+    if (id_att == id_def) {
+        return Response{false, "Выберите разные команды"};
+    }
     bool flag=1;
     for(auto& war:wars) flag=(flag and war.attacker_id!=id_att or war.defender_id!=id_def);
     if(!flag)
@@ -484,8 +490,8 @@ Response Game::declare_war(int id_att, int id_def) {
 // }
 
 Response Game::proceed_top_war() {
-    if (!is_cycle) {
-        return Response{false, "Цикл не идёт"};
+    if (is_cycle) {
+        return Response{false, "Закончите цикл"};
     }
     if(wars.size()==0) return Response{0,"Нет воин"};
     if(wars.front().step==4){
@@ -497,8 +503,8 @@ Response Game::proceed_top_war() {
 }
 
 Response Game::concede_top_war(int attack_won) {
-    if (!is_cycle) {
-        return Response{false, "Цикл не идёт"};
+    if (is_cycle) {
+        return Response{false, "Закончите цикл"};
     }
     if(wars.size()==0) return Response{0,"Нет воин"};
     wars.front().init_war();
@@ -508,8 +514,8 @@ Response Game::concede_top_war(int attack_won) {
     return Response{1,"Война закончена все посчитатно"};
 }
 Response Game::stop_top_war() {
-    if (!is_cycle) {
-        return Response{false, "Цикл не идёт"};
+    if (is_cycle) {
+        return Response{false, "Закончите цикл"};
     }
     if(wars.size()==0) return Response{0,"Нет воин"};
     wars.pop_front();

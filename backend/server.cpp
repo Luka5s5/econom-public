@@ -316,12 +316,18 @@ public:
             return r.result;
         }else
         if(j["type"] == "upgrade-building"){
-            std::cout << "done" << std::endl;
             Response r = game.upgrade_building(j["team"],j["building"]);
             json response;
             response["type"] = "response";
             response["message"] = r.response;
             m_server.send(conn,response.dump(),msg->get_opcode());
+        }else
+        if(j["type"] == "buy_army"){
+            Response r = game.upgrade_army(j["team"],j["army"]);
+            json response;
+            response["type"] = "response";
+            response["message"] = r.response;
+            m_server.send(conn,response.dump(),msg->get_opcode()); 
         }
         return false;
     }
