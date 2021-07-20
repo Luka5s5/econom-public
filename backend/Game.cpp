@@ -195,6 +195,15 @@ Response Game::end_cycle() {
         player.city_used.assign(4, 0);
         player.building_used.assign(11, 0);
     }
+    for(auto war:Game::current().wars){
+        if(Game::current().players[war.attacker_id].treaties[0].count(war.defender_id) || Game::current().players[war.attacker_id].treaties[1].count(war.defender_id)){
+			Game::current().players[war.attacker_id].ban = 1;
+			Game::current().players[war.attacker_id].treaties[0].erase(war.defender_id);
+			Game::current().players[war.attacker_id].treaties[1].erase(war.defender_id);
+			Game::current().players[war.defender_id].treaties[0].erase(war.attacker_id);
+			Game::current().players[war.defender_id].treaties[1].erase(war.attacker_id);
+		}
+    }
     return Response{true, "Цикл окончен."};
 }
 

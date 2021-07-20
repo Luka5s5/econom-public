@@ -244,7 +244,7 @@ bool War::add_by_treaty(int id){
 }
 
 bool War::add_indie_side(int id, int is_attacker){
-	if(std::find(a_side_ids.begin(),a_side_ids.end(),id)==a_side_ids.end() or std::find(d_side_ids.begin(),d_side_ids.end(),id)==d_side_ids.end())
+	if(std::find(a_side_ids.begin(),a_side_ids.end(),id)!=a_side_ids.end() or std::find(d_side_ids.begin(),d_side_ids.end(),id)!=d_side_ids.end())
 		return 0;
 	if(is_attacker){
 		for(auto did:d_side_ids){
