@@ -199,9 +199,8 @@ public:
             return false;
         }
         if(j["type"] == "register"){
-            Response r = game.register_player();
+            Response r = game.register_player(j["name"]);
             std::cout << std::string(j["name"]) << std::endl;
-            game.players[r.int_number].name = j["name"];
             json response;
             response["type"] = "response";
             response["message"] = r.response;
@@ -311,6 +310,14 @@ public:
             response["message"] = r.response;
             m_server.send(conn,response.dump(),msg->get_opcode());
             return r.result;
+        }else
+        if(j["type"] == "upgrade-building"){
+            std::cout << "done" << std::endl;
+            Response r = game.upgrade_building(j["team"],j["building"]);
+            json response;
+            response["type"] = "response";
+            response["message"] = r.response;
+            m_server.send(conn,response.dump(),msg->get_opcode());
         }
         return false;
     }

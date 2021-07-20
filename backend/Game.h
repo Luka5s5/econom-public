@@ -14,7 +14,7 @@ public:
     // Tech
     void init(); // Use this method with first call of current().
     static Game& current();
-    Response register_player();
+    Response register_player(std::string name);
     Response start_cycle();
     Response end_cycle();
 
@@ -39,7 +39,7 @@ public:
 
     // Upgrades
     Response upgrade_army(int player_id, std::vector<int> army);
-    Response upgrade_building(int player_id, std::vector<int> buildings);
+    Response upgrade_building(int player_id, int building_id);
 
     // Not for frontend
     std::vector<int> get_player_army(int id);

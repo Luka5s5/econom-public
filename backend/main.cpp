@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Game.h"
 
+/* 
 void test1() {
     Game::current().init();
     // int pid1 = Game::current().register_player().int_number;
@@ -19,8 +20,8 @@ void test2() {
 
 void test4() {
     Game::current().init();
-    Game::current().register_player();
-    Game::current().register_player();
+    Game::current().register_player("N1");
+    Game::current().register_player("N2");
 
     Game::current().start_cycle();
     std::cout << Game::current().trade(0,1,{0,0,0,0},{1,-1,0,0,0,0,0,0,0,0,0}).response << std::endl;
@@ -86,10 +87,10 @@ void test4() {
 
 void test_kill_npc(){
     Game::current().init();
-    Game::current().register_player();
-    Game::current().register_player();
-    Game::current().register_player();
-    Game::current().register_player();
+    Game::current().register_player("1");
+    Game::current().register_player("2");
+    Game::current().register_player("3");
+    Game::current().register_player("4");
     for(int i=0;i<260;i++){
         Game::current().start_cycle();
         Game::current().end_cycle();
@@ -119,8 +120,8 @@ void test_kill_npc(){
 
 void test5() {
     Game::current().init();
-    Game::current().register_player();
-    Game::current().register_player();
+    Game::current().register_player("1");
+    Game::current().register_player("2");
     Game::current().start_cycle();
     std::cout << Game::current().add_treaty(0, 1, 0).response << std::endl;
     // Game::current().trade(0, 1, {0, 0, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0});
@@ -128,7 +129,7 @@ void test5() {
     Game::current().players[1].show();
     Game::current().end_cycle();
 }
-
+*/
 int main() {
-    test5();
+    //test5();
 }

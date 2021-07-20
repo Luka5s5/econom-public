@@ -123,7 +123,7 @@ function update(){
                 let msg = {};
                 msg.team = Number(document.getElementById("team").value);
                 msg.type = "upgrade-building";
-                msg.building = lab.dataset.type;
+                msg.building = Number(lab.dataset.type);
                 wsSend(msg);
             }
         }
