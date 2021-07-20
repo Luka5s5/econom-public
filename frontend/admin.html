@@ -48,11 +48,6 @@ html, body {
    
 <body>
 
-    <p class="label">
-        Команда1: <select id="team" class="team-selector label"></select>
-    </p>
-<hr>
-
 <p class="label">
 <label>Название команды:</label>
 <input class="label"></input>
@@ -68,7 +63,16 @@ html, body {
 <button id="concede_atk" class="btn can">Атакующий сдаётся</button>
 <button id="concede_def" class="btn can">Защитник сдаётся</button>
 <button id="peace" class="btn can">Перемирие</button>
-</p>
+</p><br>
+<div class="label">
+    <p class="label">
+        Команда1: <select id="team" class="team-selector label"></select>
+    </p>
+    <button id="add_by_treaty" class="btn can">Добавить связанного договором</button>
+    <button id="break_defence_treaties" class="btn buy">Расторгнуть договоры</button>
+    <button id="add_indie_side_def" class="btn can">Добавить независимого к защитникам</button>
+    <button id="add_indie_side_atk" class="btn buy">Добавить независимого к атакующим</button>
+</div>
 <script type = "text/javascript">
 
 document.getElementById("register").onclick = function(){
@@ -114,6 +118,35 @@ document.getElementById("concede_def").onclick = function(){
 document.getElementById("peace").onclick = function(){
     let msg = {};
     msg.type = "peace";
+    wsSend(msg);
+}
+
+document.getElementById("break_defence_treaties").onclick = function(){
+    let msg = {};
+    msg.type = "break_defence_treaties";
+    wsSend(msg);
+}
+
+document.getElementById("add_by_treaty").onclick = function(){
+    let msg = {};
+    msg.type = "add_by_treaty";
+    msg.team = Number(document.getElementById("team").value);
+    wsSend(msg);
+}
+
+document.getElementById("add_indie_side_atk").onclick = function(){
+    let msg = {};
+    msg.type = "add_indie_side";
+    msg.is_attacker = true;
+    msg.team = Number(document.getElementById("team").value);
+    wsSend(msg);
+}
+
+document.getElementById("add_indie_side_def").onclick = function(){
+    let msg = {};
+    msg.type = "add_indie_side";
+    msg.is_attacker = false;
+    msg.team = Number(document.getElementById("team").value);
     wsSend(msg);
 }
 
