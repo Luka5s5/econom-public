@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body { 
+    height: 97%;
+    width: 99%;
+}
+
+.upper-level{
+    display: flex;
+    flex-direction: row;
+}
+
+.side {
+    width: 30%;
+    padding: 5px 5px;
+}
+
+.center {
+    width: 35%;
+    padding: 5px 5px;
+}
+    
+.btn {
+  border: none; /* Remove borders */
+  color: white; /* Add a text color */
+  padding: 14px 28px; /* Add some padding */
+  cursor: pointer; /* Add a pointer cursor on mouse-over */
+  margin: 4px 2px;
+  border-radius: 5px;
+}
+
+.label {
+  display: inline-block;
+  padding: 12px; /* Some padding */ 
+  border: 1px solid; /* Gray border */
+  border-color: #04AA6D;
+  border-radius: 5px; /* Rounded borders */
+  box-sizing: border-box; /* Make sure that padding and width stays in place */
+  margin: 4px 2px;
+}
+
+.sell {background-color: #04AA6D;} /* Green */
+.sell:hover {background-color: #46a049;}
+
+.buy {background-color: #f44336;} /* Red */
+.buy:hover {background: #da190b;}
+
+.can {background-color: #04AA6D;} /* Green */
+.can:hover {background-color: #46a049;}
+
+.cant {background-color: #dddddd;} /* Red */
+.cant:hover {background: #dddddd;}
+
+.progress {
+  border-radius: 5px;
+  border: 1px solid;
+  width: 100%;
+  background-color: #dddddd;
+  display: flex;
+  flex-direction: row;
+}
+
+.green {
+  background-color: #04AA6D !important;
+}
+
+.red {
+  background-color: #f44336 !important;
+}
+
+.bar {
+  width: 30%;
+  height: 30px;
+  background-color: #04AA6D;
+}
+
+</style>
+		
+</head>
+   
+<body>
+
+<div class="upper-level">
+<div class="side">
+<label class="label">Атакующие</label><br>
+Инициатор <label class="label attacker"></label><br>
+Оставшаяся армия<br>
+<div class="progress">
+    <div class="bar atk-death green"></div>
+</div><br>
+<p class="composition">Состав армии<p>
+<div class="progress" id="atk-army-composition"></div><br>
+<ul class="label atk-list"></ul><br>
+</div>
+
+<div class="center">
+<br><br><br><br><br><br>
+<div class="progress green"><div class="red bar army-balance"></div></div>
+</div>
+
+<div class="side">
+<label class="label">Защитники</label><br>
+Цель атаки <label class="label defender"></label><br>
+Оставшаяся армия<br>
+<div class="progress">
+    <div class="bar def-death green"></div>
+</div>
+<p class="composition">Состав армии<p>
+<div class="progress" id="def-army-composition"></div><br>
+<ul class="label def-list"></ul><br>
+</div>
+
+</div>
+
+<script type = "text/javascript">
+
+var army_colors = ["#04AA6D","#f44336","#4649a0"];
+
+function update(){
+    let str = "Состав армии ( ";
+    for(let a = 0; a < army_names.length; a++){
+        str += "<b style=\"color: " + army_colors[a] + ";\">"+army_names[a]+"</b> ";
+    }
+    str += ")";
+    let comps = document.getElementsByClassName("composition");
+    for(let comp of comps){
+        comp.innerHTML = str;
+    }
+    let atk_comp = document.getElementById("atk-army-composition");
+    if(atk_comp.getElementsByTagName("div") == null || atk_comp.getElementsByTagName("div").length == 0){
+        for(let i = 0; i < army_names.length; i++){
+            let bar = document.createElement("div");
+            bar.classList.add("bar");
+            bar.style["background-color"] = army_colors[i];
+            bar.classList.add("atk-army");
+            bar.dataset.type = i;
+            if(i == 0){
+                bar.style["border-radius"] = "5px 0px 0px 5px";
+            }
+            if(i == army_names.length - 1){
+                bar.style["border-radius"] = "0px 5px 5px 0px";
+            }
+            atk_comp.appendChild(bar);
+        }
+    }
+    let def_comp = document.getElementById("def-army-composition");
+    if(def_comp.getElementsByTagName("div") == null || def_comp.getElementsByTagName("div").length == 0){
+        for(let i = 0; i < army_names.length; i++){
+            let bar = document.createElement("div");
+            bar.classList.add("bar");
+            bar.style["background-color"] = army_colors[i];
+            bar.classList.add("def-army");
+            bar.dataset.type = i;
+            if(i == 0){
+                bar.style["border-radius"] = "5px 0px 0px 5px";
+            }
+            if(i == army_names.length - 1){
+                bar.style["border-radius"] = "0px 5px 5px 0px";
+            }
+            def_comp.appendChild(bar);
+        }
+    }
+}
+</script>
+
+<script type = "text/javascript" src="lib.js?version=1">
+</script>
+
+</body>
+</html> 
+ 

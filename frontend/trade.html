@@ -50,7 +50,7 @@ html, body {
 <hr>
 <label id="total" class="label">Игрок получит 0</label><br>
 <button id="submit"  class="btn sell">Совершить сделку</button>
-<button id="clear" class="btn can">Очистить поля</button>
+<button id="clear" class="btn buy">Очистить поля</button>
 
 <script type = "text/javascript">
 const buy = "Игрок покупает ";
@@ -94,6 +94,7 @@ document.getElementById("clear").onclick = function(){
     for(let el of mydiv.getElementsByTagName("input")){
         el.value = "";
     }
+    updateTotal();
 }
 
 function update(){
@@ -134,13 +135,13 @@ function update(){
         btn.onclick = function() {
             if(this.innerHTML == buy){
                 this.setAttribute("class","btn sell");
-                this.innerHTML = sell
+                this.innerHTML = sell;
                 for(el of this.parentElement.getElementsByClassName("hide-by-button")){
                     el.style.display = "inline";
                 }
             }else{
                 this.setAttribute("class","btn buy");
-                this.innerHTML = buy
+                this.innerHTML = buy;
                 for(el of this.parentElement.getElementsByClassName("hide-by-button")){
                     el.style.display = "none";
                 }

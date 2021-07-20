@@ -84,17 +84,21 @@ json serializeWar(War& war){
     json w;
     w["attacker"] = war.attacker_id;
     w["defender"] = war.defender_id;
+    w["attackers_list"] = war.a_side_ids;
+    w["defenders_list"] = war.d_side_ids;
     w["step"] = war.step;
     std::vector<int> a_army(3);
     for(auto a : war.a_army){
         a_army[a.first]++;
     }
     w["attacker_army"] = a_army;
+    w["attackers_initial_army"] = war.total_att;
     std::vector<int> d_army(3);
     for(auto a : war.d_army){
         d_army[a.first]++;
     }
     w["defender_army"] = d_army;
+    w["defenders_initial_army"] = war.total_def;
     return w;
 }
 
