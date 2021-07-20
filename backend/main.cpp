@@ -117,6 +117,18 @@ void test_kill_npc(){
     }
 }
 
+void test5() {
+    Game::current().init();
+    Game::current().register_player();
+    Game::current().register_player();
+    Game::current().start_cycle();
+    std::cout << Game::current().add_treaty(0, 1, 0).response << std::endl;
+    // Game::current().trade(0, 1, {0, 0, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0});
+    Game::current().players[0].show();
+    Game::current().players[1].show();
+    Game::current().end_cycle();
+}
+
 int main() {
-    test4();
+    test5();
 }

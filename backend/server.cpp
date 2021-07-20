@@ -194,7 +194,7 @@ public:
         if(j["type"] == "sign"){
             int id1 = j["team1"];
             int id2 = j["team2"];
-            int type = j["treatytype"];
+            int type = j["treatyType"];
             Response r = game.add_treaty(id1,id2,type);
             json response;
             response["type"] = "response";
@@ -205,7 +205,7 @@ public:
         if(j["type"] == "terminate"){
             int id1 = j["team1"];
             int id2 = j["team2"];
-            int type = j["treatytype"];
+            int type = j["treatyType"];
             Response r = game.remove_treaty(id1,id2,type);
             json response;
             response["type"] = "response";

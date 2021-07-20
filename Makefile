@@ -23,6 +23,9 @@ EXES += $(BUILD)/server
 
 OBJS = $(BUILD)/Game.o
 OBJS += $(BUILD)/War.o
+OBJS += $(BUILD)/Player.o
+OBJS += $(BUILD)/City.o
+
 
 all: $(OBJS) $(EXES)
 

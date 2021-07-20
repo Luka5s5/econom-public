@@ -40,6 +40,9 @@ void Game::kill_troop(int id, int troop_type){
 
 
 Response Game::upgrade_building(int player_id, std::vector<int> buildings) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     Player& player = players[player_id];
     bool accepted = true;
     for (int i = 0; i < buildings.size(); i++) {
@@ -107,6 +110,9 @@ Response Game::upgrade_building(int player_id, std::vector<int> buildings) {
 }
 
 Response Game::upgrade_army(int player_id, std::vector<int> army) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     Player& player = players[player_id];
     bool accepted = true;
     std::vector<int> resources(11);
@@ -131,11 +137,17 @@ Response Game::upgrade_army(int player_id, std::vector<int> army) {
 }
 
 Response Game::set_strategy(int player_id, int new_strategy) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     players[player_id].strategy = new_strategy;
     return Response{true, "Стратегия изменена"};
 }
 
 Response Game::get_victory_points(int player_id) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     Player& player = players[player_id];
     int answer = 0;
     for (int i = 0; i < 7; i++) {
@@ -188,13 +200,19 @@ Response Game::trade(int sender_id,
                int reciever_id,
                std::vector<double> currencies,
                std::vector<int> resources) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
+    if (sender_id == reciever_id) {
+        return Response{false, "Совпадают получатель и источник ресурсов"};
+    }
     std::vector<double> currencies1 = currencies, currencies2 = currencies;
     std::vector<int> resources1 = resources, resources2 = resources;
     for (int i = 0; i < currencies.size(); i++) {
         if (currencies1[i] < 0)
             currencies1[i] = 0;
     }
-    for (int i = 0; i < currencies.size(); i++) {
+    for (int i = 0; i < resources.size(); i++) {
         if (resources1[i] < 0)
             resources1[i] = 0;
     }
@@ -204,7 +222,7 @@ Response Game::trade(int sender_id,
         else
             currencies2[i] *= (-1);
     }
-    for (int i = 0; i < currencies.size(); i++) {
+    for (int i = 0; i < resources.size(); i++) {
         if (resources2[i] > 0)
             resources2[i] = 0;
         else
@@ -219,7 +237,6 @@ Response Game::trade(int sender_id,
     if (!accepted) {
         return Response{false, "Недостаточно средств на одном из балансов."};
     }
-
     p1.change_currencies(changed_sign(currencies1));
     p1.change_resources(changed_sign(resources1));
     p2.change_currencies(changed_sign(currencies2));
@@ -232,6 +249,12 @@ Response Game::trade(int sender_id,
 }
 
 Response Game::add_treaty(int player1_id, int player2_id, int type_of_treaty) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
+    if (player1_id == player2_id) {
+        return Response{false, "Выберите разные команды"};
+    }
     Player& p1 = players[player1_id];
     Player& p2 = players[player2_id];
     bool accepted = (!p1.has_treaty(player2_id, type_of_treaty)) &&
@@ -245,6 +268,12 @@ Response Game::add_treaty(int player1_id, int player2_id, int type_of_treaty) {
 }
 
 Response Game::remove_treaty(int player1_id, int player2_id, int type_of_treaty) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
+    if (player1_id == player2_id) {
+        return Response{false, "Выберите разные команды"};
+    }
     Player& p1 = players[player1_id];
     Player& p2 = players[player2_id];
     bool accepted = (p1.has_treaty(player2_id, type_of_treaty)) &&
@@ -258,6 +287,9 @@ Response Game::remove_treaty(int player1_id, int player2_id, int type_of_treaty)
 }
 
 Response Game::sell_query(int player_id, int city_id, std::vector<int> resource_array) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     Player& player = players[player_id];
     City& city = cities[city_id];
     if (!city.check_available_for_buy_resources(resource_array)) {
@@ -379,6 +411,7 @@ Response Game::dumpload(std::string filename) {
 
 Response Game::load(std::string filename) {
     players.clear();
+    wars.clear();
 
     std::ifstream file;
     file.open(filename);
@@ -405,6 +438,9 @@ Game& Game::current() {
 }
 
 Response Game::declare_war(int id_att, int id_def) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     bool flag=1;
     for(auto& war:wars) flag=(flag and war.attacker_id!=id_att or war.defender_id!=id_def);
     if(!flag)
@@ -414,6 +450,9 @@ Response Game::declare_war(int id_att, int id_def) {
 }
 
 Response Game::add_top_war(int is_attack, int id) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     bool flag=1;
     for(auto i:wars.front().a_side_ids){
         flag=(flag && i!=id);
@@ -432,6 +471,9 @@ Response Game::add_top_war(int is_attack, int id) {
 }
 
 Response Game::proceed_top_war() {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     if(wars.size()==0) return Response{0,"Нет воин"};
     if(wars.front().step==4){
         wars.pop_front();
@@ -442,6 +484,9 @@ Response Game::proceed_top_war() {
 }
 
 Response Game::concede_top_war(int attack_won) {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     if(wars.size()==0) return Response{0,"Нет воин"};
     wars.front().step=4;
     wars.front().someone_won(attack_won);
@@ -449,6 +494,9 @@ Response Game::concede_top_war(int attack_won) {
     return Response{1,"Война закончена все посчитатно"};
 }
 Response Game::stop_top_war() {
+    if (!is_cycle) {
+        return Response{false, "Цикл не идёт"};
+    }
     if(wars.size()==0) return Response{0,"Нет воин"};
     wars.pop_front();
     return Response{1,"Война закончилась миром"};
