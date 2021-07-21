@@ -78,7 +78,7 @@ bool War::someone_won(int who){
 			int aid=a_side_ids[i];
 			for(int j=0;j<11;j++){
 				if(aid<0) continue;
-				Game::current().players[aid].resources[j]+=std::lround((a_size[i]/total_att)*resources[j]);
+				Game::current().players[aid].resources[j]+=std::lround(((a_size[i]*1.0)/total_att)*resources[j]);
 			}
 		}
 	}
@@ -96,7 +96,7 @@ bool War::someone_won(int who){
 			int did=d_side_ids[i];
 			for(int j=0;j<11;j++){
 				if(did<0) continue;
-				Game::current().players[did].resources[j]+=std::lround((d_size[i]/total_def)*resources[j]);
+				Game::current().players[did].resources[j]+=std::lround(((d_size[i]*1.0)/total_def)*resources[j]);
 			}
 		}
 	}

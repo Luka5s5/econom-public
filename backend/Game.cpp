@@ -197,6 +197,7 @@ Response Game::end_cycle() {
         player.building_used.assign(11, 0);
     }
     for(auto war:Game::current().wars){
+        war.init_war();
         if(Game::current().players[war.attacker_id].treaties[0].count(war.defender_id) || Game::current().players[war.attacker_id].treaties[1].count(war.defender_id)){
 			Game::current().players[war.attacker_id].ban = 1;
 			Game::current().players[war.attacker_id].treaties[0].erase(war.defender_id);
