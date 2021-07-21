@@ -114,7 +114,7 @@ bool War::init_war()
 		a_size.push_back(std::accumulate(temp.begin(),temp.end(),0));
 		total_att+=(a_size.back());
 		if(aid<0) continue;
-		Game::current().players[aid].last_attack=1;
+		Game::current().players[aid].last_attack=0;
 	}
 	for(auto did:d_side_ids){
 		std::vector<int> temp=Game::current().get_player_army(did);

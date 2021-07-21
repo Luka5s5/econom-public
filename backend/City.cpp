@@ -1,8 +1,8 @@
 #include "City.h"
 
 City::City(int id1, std::vector<std::vector<double>> plots, std::function<bool(Player &, std::vector<int> &)> accept1,
-           std::function<void(Player &, std::vector<int> &)> pre_action1,
-           std::function<void(Player &, std::vector<int> &)> post_action1) {
+           std::function<bool(Player &, std::vector<int> &)> pre_action1,
+           std::function<bool(Player &, std::vector<int> &)> post_action1) {
     id = id1;
     for (int i = 0; i < plots.size(); i++) {
         items.push_back(Plot{plots[i][0], (int)plots[i][1], plots[i][2], (int)plots[i][3]});
@@ -11,7 +11,7 @@ City::City(int id1, std::vector<std::vector<double>> plots, std::function<bool(P
     accept = accept1;
     pre_action = pre_action1;
     post_action = post_action1;
-    army = {1000, 1000, 1000};
+    army = {750, 750, 750};
     strategy = 3;
 }
 

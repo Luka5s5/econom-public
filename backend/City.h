@@ -9,7 +9,7 @@ struct Plot;
 
 struct City {
     City(int id1, std::vector<std::vector<double>> plots, std::function<bool(Player&, std::vector<int>&)> accept1,
-                std::function<void(Player&, std::vector<int>&)> pre_action1, std::function<void(Player&, std::vector<int>&)> post_action1);
+                std::function<bool(Player&, std::vector<int>&)> pre_action1, std::function<bool(Player&, std::vector<int>&)> post_action1);
     bool check_available_for_buy_resources(std::vector<int> res);
     void change_available_for_buy_resources(std::vector<int> delta);
     int get_limit_Q(int res_id);
@@ -31,8 +31,8 @@ struct City {
     std::vector<Plot> items;
     std::vector<int> delta_per_round;
     std::function<bool(Player&, std::vector<int>&)> accept;
-    std::function<void(Player&, std::vector<int>&)> pre_action;
-    std::function<void(Player&, std::vector<int>&)> post_action;
+    std::function<bool(Player&, std::vector<int>&)> pre_action;
+    std::function<bool(Player&, std::vector<int>&)> post_action;
     std::vector<int> army;
     int strategy;
 };

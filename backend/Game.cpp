@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <cmath>
+#include <string>
 
 template <typename T>
 std::vector<T> changed_sign(std::vector<T> v) {
@@ -338,19 +339,29 @@ Response Game::sell_query(int player_id, int city_id, std::vector<int> resource_
         return Response{false, "Недостаточно валюты"};
     }
     player.city_used[city_id] = 1;
-    city.pre_action(player, resource_array);
+    int OK = 0, PRE_ACTION = 1, POST_ACTION = 2;
+    int status = OK;
+    if (city.pre_action(player, resource_array) && city.id == 1) {
+        status |= PRE_ACTION;
+    }
+    currency_array.assign(4, 0);
+    for (int i = 0; i < resource_array.size(); i++) {
+        currency_array[city_id] += city.get_price(i) * resource_array[i];
+    }
     player.change_currencies(currency_array);
     player.change_resources(changed_sign(resource_array));
     city.change_available_for_buy_resources(changed_sign(resource_array));
-    city.post_action(player, resource_array);
-    return Response{true, "Успешно."};
+    if (city.post_action(player, resource_array) && city.id == 0) {
+        status |= POST_ACTION;
+    }
+    return Response{true, std::string("Успешно") + ((status & PRE_ACTION) ? std::string(", Либерти украл у вас трэйд") : std::string("")) + ((status & POST_ACTION) ? std::string(", Варант забрал у вас чуть золота") : std::string(""))};
 }
 
 void Game::init() {
     auto bool_pass = [](Player& p, std::vector<int>& resources) {return true;};
-    auto pass = [](Player& p, std::vector<int>& resources){return;};
     auto varant = [](Player& p, std::vector<int>& resources){ // после сделки нужно уменьшить золото на 10%
         p.resources[0] = lround(p.resources[0] * 0.9);
+        return true;
     };
     auto liberty = [](Player& p, std::vector<int>& resources){ // Перед покупкой нужно проверить на вино
         if (resources[6] != 0 && rand() % 5 == 0) {
@@ -361,7 +372,9 @@ void Game::init() {
             }
             p.change_resources(changed_sign(resources));
             resources.assign(11, 0);
+            return true;
         }
+        return false;
     };
     auto bool_pass_mordor = [](Player& p, std::vector<int>& resources) { // Проверка на последнюю войну
         return (p.last_attack <= 3);
@@ -380,7 +393,7 @@ void Game::init() {
                               {0.0000000001, 0, -1, 1000000},
                               {0.0000000001, 0, -1, 1000000},
                               {0.0000000001, 0, -1, 1000000}
-    }, bool_pass, pass, varant));
+    }, bool_pass, bool_pass, varant));
     cities.push_back(City(1, {{0.5947, 0, -0.1812, 1000}, // Либерти
                               {0.0344, 0, -0.3021, 1000},
                               {0.0685, 0, -0.2159, 1000},
@@ -388,11 +401,11 @@ void Game::init() {
                               {0.1650, 0, -0.0560, 1000},
                               {0.1454, 0, -0.0548, 1000},
                               {0.0091, 0, -0.0096, 500},
-                              {0.0001, 0, -1, 1000000},
+                              {0.0000000001, 0, -1, 1000000},
                               {0.0001, 0, -0.0001, 100},
-                              {0.0001, 0, -1, 1000000},
-                              {0.0001, 0, -1, 1000000}
-    }, bool_pass, liberty, pass));
+                              {0.0000000001, 0, -1, 1000000},
+                              {0.0000000001, 0, -1, 1000000}
+    }, bool_pass, liberty, bool_pass));
     cities.push_back(City(2, {{0.0954, 0, -0.1019, 1000}, // Мордор
                               {0.1033, 0, -0.0131, 1000},
                               {0.1750, 0, -0.0258, 1000},
@@ -400,11 +413,11 @@ void Game::init() {
                               {0.0256, 0, -0.0244, 1000},
                               {0.0238, 0, -0.0226, 1000},
                               {0.0048, 0, -0.0456, 1000},
-                              {0.0001, 0, -1, 1000000},
-                              {0.0001, 0, -1, 1000000},
+                              {0.0000000001, 0, -1, 1000000},
+                              {0.0000000001, 0, -1, 1000000},
                               {0.0001, 0, -0.0001, 100},
-                              {0.0001, 0, -1, 1000000}
-    }, bool_pass_mordor, pass, pass));
+                              {0.0000000001, 0, -1, 1000000}
+    }, bool_pass_mordor, bool_pass, bool_pass));
     cities.push_back(City(3, {{0.0964, 0, -0.1067, 1000}, // Кель-Талас
                               {0.0914, 0, -0.1035, 1000},
                               {0.1615, 0, -0.0525, 1000},
@@ -412,11 +425,11 @@ void Game::init() {
                               {0.1604, 0, -0.0473, 1000},
                               {0.1498, 0, -0.0463, 1000},
                               {0.1163, 0, -0.0959, 1000},
-                              {0.0001, 0, -1, 1000000},
-                              {0.0001, 0, -1, 1000000},
-                              {0.0001, 0, -1, 1000000},
+                              {0.0000000001, 0, -1, 1000000},
+                              {0.0000000001, 0, -1, 1000000},
+                              {0.0000000001, 0, -1, 1000000},
                               {0.0001, 0, -0.0001, 100}
-    }, bool_pass_talas, pass, pass));
+    }, bool_pass_talas, bool_pass, bool_pass));
 }
 
 Response Game::dumpload(std::string filename) {
