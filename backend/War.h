@@ -6,6 +6,7 @@
 #include<ctime>
 #include<algorithm>
 #include<numeric>
+#include<cmath>
 
 struct War {
 	War(int _attacker_id, int _defender_id);

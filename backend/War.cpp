@@ -62,7 +62,7 @@ War::War(int _attacker_id, int _defender_id)
 bool War::someone_won(int who){
 	//attacker
 	if(who==1){
-		std::vector<int> resources(11);
+		std::vector<double> resources(11);
 		for(auto did:d_side_ids){
 			double coeff=(did==defender_id?1:0.5);
 			for(int i=0;i<11;i++){
@@ -78,12 +78,12 @@ bool War::someone_won(int who){
 			int aid=a_side_ids[i];
 			for(int j=0;j<11;j++){
 				if(aid<0) continue;
-				Game::current().players[aid].resources[j]+=(int)((a_size[i]/total_att)*resources[j]);
+				Game::current().players[aid].resources[j]+=std::lround((a_size[i]/total_att)*resources[j]);
 			}
 		}
 	}
 	else{
-		std::vector<int> resources(11);
+		std::vector<double> resources(11);
 		for(auto aid:a_side_ids){
 			double coeff=(aid==attacker_id?1:0.5);
 			for(int i=0;i<11;i++){
@@ -96,7 +96,7 @@ bool War::someone_won(int who){
 			int did=d_side_ids[i];
 			for(int j=0;j<11;j++){
 				if(did<0) continue;
-				Game::current().players[did].resources[j]+=(int)((d_size[i]/total_def)*resources[j]);
+				Game::current().players[did].resources[j]+=std::lround((d_size[i]/total_def)*resources[j]);
 			}
 		}
 	}
