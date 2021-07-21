@@ -504,6 +504,10 @@ Response Game::proceed_top_war() {
         return Response{false, "Закончите цикл"};
     }
     if(wars.size()==0) return Response{0,"Нет воин"};
+    if(wars.front().total_att==0 and wars.front().total_def==0){
+        wars.pop_front();
+        return Response{true,"Война 0 на 0 авто-сдана, все чикипуки."};
+    }
     if(wars.front().step==4){
         wars.pop_front();
         return Response{1,"Война закончена все посчитатно"};
@@ -518,6 +522,10 @@ Response Game::concede_top_war(int attack_won) {
     }
     if(wars.size()==0) return Response{0,"Нет воин"};
     wars.front().init_war();
+    if(wars.front().total_att==0 and wars.front().total_def==0){
+        wars.pop_front();
+        return Response{true,"Война 0 на 0 сдана, все чикипуки."};
+    }
     wars.front().step=4;
     wars.front().someone_won(attack_won);
     wars.pop_front();

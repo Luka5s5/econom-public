@@ -68,18 +68,17 @@ bool War::someone_won(int who){
 			for(int i=0;i<11;i++){
 				if(did<0){
 					resources[i]+=coeff*Game::current().cities[-did-1].items[i].countQ();
-				 	// std::cout<<resources[i]<<" ! ";
-					continue;
+				 	continue;
 				}
 				resources[i]+=coeff*Game::current().players[did].resources[i];
 				Game::current().players[did].resources[i]-=(int)(coeff*Game::current().players[did].resources[i]);
 			}
-			// std::cout<<"\n";
 		}
 		for(int i=0;i<a_side_ids.size();i++){
+			int aid=a_side_ids[i];
 			for(int j=0;j<11;j++){
-				if(a_side_ids[i]<0) continue;
-				Game::current().players[a_side_ids[i]].resources[j]+=(int)((a_size[i]/total_att)*resources[j]);
+				if(aid<0) continue;
+				Game::current().players[aid].resources[j]+=(int)((a_size[i]/total_att)*resources[j]);
 			}
 		}
 	}
@@ -94,9 +93,10 @@ bool War::someone_won(int who){
 			}
 		}
 		for(int i=0;i<d_side_ids.size();i++){
+			int did=d_side_ids[i];
 			for(int j=0;j<11;j++){
-				if(d_side_ids[i]<0) continue;
-				Game::current().players[d_side_ids[i]].resources[j]+=(int)((d_size[i]/total_def)*resources[j]);
+				if(did<0) continue;
+				Game::current().players[did].resources[j]+=(int)((d_size[i]/total_def)*resources[j]);
 			}
 		}
 	}
