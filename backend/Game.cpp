@@ -540,6 +540,10 @@ Response Game::concede_top_war(int attack_won) {
         wars.pop_front();
         return Response{true,"Война 0 на 0 сдана, все чикипуки."};
     }
+    if((attack_won and wars.front().total_att==0) or (!attack_won and wars.front().total_def==0)){
+        wars.pop_front();
+        return Response{true,"Сдались нулевой армии, ничего не происходит."};
+    }
     wars.front().step=4;
     wars.front().someone_won(attack_won);
     wars.pop_front();
