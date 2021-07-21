@@ -180,6 +180,23 @@ ws.onmessage = function (evt) {
                 }
             }
         }
+        var l = document.getElementsByClassName("treaty-list");
+        if(l != null){
+            for(let list of l){
+                while (list.firstChild) {
+                    list.removeChild(list.lastChild);
+                }
+                let id = list.dataset.team;
+                let treatytype = list.dataset.treatytype;
+                if(id != null){
+                    for(let a of data.teamlist[id].treaties[treatytype]){
+                        let li = document.createElement("li");
+                        li.innerHTML = team_names[a];
+                        list.appendChild(li);
+                    }
+                }
+            }
+        }
         var l = document.getElementsByClassName("victory-points");
         if(l != null){
             for(let lab of l){
